@@ -30,6 +30,7 @@ __all__ = (
     "luminosity_ratio_from_magnitudes",
     "luminosity_weight_from_magnitude",
     "magnitude_difference_from_luminosity_ratio",
+    "magnitude_from_luminosity",
 )
 
 __api_aliases__ = {
@@ -38,6 +39,7 @@ __api_aliases__ = {
     "magnitude_difference_from_luminosity_ratio": "magnitude_difference_from_ratio",
     "luminosity_weight_from_magnitude": "weight_from_magnitude",
     "luminosity_from_magnitude": "from_magnitude",
+    "magnitude_from_luminosity": "to_magnitude",
 }
 
 
@@ -60,12 +62,7 @@ def luminosity_ratio(
     Returns:
         NumPy array of luminosity ratios ``L / L_star``.
     """
-    m_arr = validate_array(absolute_mag, name="absolute magnitude")
-    m_star_arr = validate_array(m_star, name="m_star")
-
-    x = safe_power10(-0.4 * (m_arr - m_star_arr))
-
-    return np.asarray(x, dtype=float)
+    return luminosity_ratio_from_magnitudes(absolute_mag, m_star)
 
 
 def luminosity_ratio_from_magnitudes(
@@ -121,7 +118,7 @@ def magnitude_difference_from_luminosity_ratio(
 
 def luminosity_weight_from_magnitude(
     magnitude: FloatInput,
-    reference_magnitude: float = 0.0,
+    reference_magnitude: FloatInput = 0.0,
 ) -> FloatArray:
     r"""Return an unnormalized luminosity weight from a magnitude.
 
@@ -139,17 +136,13 @@ def luminosity_weight_from_magnitude(
     Returns:
         NumPy array proportional to luminosity.
     """
-    mag = validate_array(magnitude, name="magnitude")
-
-    weight = safe_power10(-0.4 * (mag - reference_magnitude))
-
-    return np.asarray(weight, dtype=float)
+    return luminosity_ratio_from_magnitudes(magnitude, reference_magnitude)
 
 
 def luminosity_from_magnitude(
     magnitude: FloatInput,
     *,
-    reference_magnitude: float = 0.0,
+    reference_magnitude: FloatInput = 0.0,
     reference_luminosity: float = 1.0,
 ) -> FloatArray:
     r"""Return luminosity corresponding to a magnitude relative to a reference.
@@ -172,11 +165,54 @@ def luminosity_from_magnitude(
     Raises:
         ValueError: If ``reference_luminosity`` is not strictly positive.
     """
-    if reference_luminosity <= 0:
-        raise ValueError("reference_luminosity must be strictly positive.")
+    if not np.isfinite(reference_luminosity) or reference_luminosity <= 0:
+        raise ValueError("reference_luminosity must be finite and strictly positive.")
 
     ratio = luminosity_ratio_from_magnitudes(
         magnitude,
         reference_magnitude,
     )
     return np.asarray(reference_luminosity * ratio, dtype=float)
+
+
+def magnitude_from_luminosity(
+    luminosity: FloatInput,
+    *,
+    reference_magnitude: FloatInput = 0.0,
+    reference_luminosity: float = 1.0,
+) -> FloatArray:
+    r"""Return magnitude corresponding to a luminosity relative to a reference.
+
+    This uses
+
+    .. math::
+
+        M = M_{\mathrm{ref}}
+        - 2.5 \log_{10}
+        \left(\frac{L}{L_{\mathrm{ref}}}\right).
+
+    Args:
+        luminosity: Luminosity value(s) in the same units as the reference.
+        reference_magnitude: Reference magnitude value(s).
+        reference_luminosity: Reference luminosity.
+
+    Returns:
+        NumPy array of magnitudes.
+
+    Raises:
+        ValueError: If luminosity or reference luminosity is non-finite
+            or non-positive, or if reference magnitude is non-finite.
+    """
+    lum = validate_array(luminosity, name="luminosity")
+    ref_mag = validate_array(reference_magnitude, name="reference_magnitude")
+
+    if np.any(lum <= 0.0):
+        raise ValueError("luminosity must be strictly positive.")
+
+    if not np.isfinite(reference_luminosity) or reference_luminosity <= 0.0:
+        raise ValueError("reference_luminosity must be finite and strictly positive.")
+
+    return np.asarray(
+        ref_mag - 2.5 * (np.log10(lum) - np.log10(reference_luminosity)),
+        dtype=float,
+    )
