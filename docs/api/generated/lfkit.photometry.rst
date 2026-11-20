@@ -10,5 +10,6 @@ lfkit.photometry
    :toctree:
    :recursive:
 
+   fluxes
    luminosities
    magnitudes

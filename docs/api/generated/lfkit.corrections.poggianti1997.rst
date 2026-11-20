@@ -8,9 +8,11 @@ lfkit.corrections.poggianti1997
 
    .. autosummary::
    
+      available_from_table
       available_pairs
       describe_poggianti1997_available
       extract_sed_spectrum
+      extract_series
       load_poggianti1997_tables
       make_ecorr_interpolator
       make_kcorr_interpolator

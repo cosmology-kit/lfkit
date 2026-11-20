@@ -258,117 +258,144 @@ The examples are split by topic so that each page stays focused.
       :link-type: doc
       :shadow: md
 
-      **Luminosity function models**
-      ^^^
+      .. card-header::
+
+         **Luminosity function models**
+
       Build, evaluate, and compare ordinary luminosity function models,
       including evolving models and model surfaces.
 
-      +++
-      *API:* ``LuminosityFunction``
+      .. card-footer::
+
+         *API:* ``LuminosityFunction``
 
    .. grid-item-card::
       :link: magnitude_integrals
       :link-type: doc
       :shadow: md
 
-      **Magnitude integrals**
-      ^^^
+      .. card-header::
+
+         **Magnitude integrals**
+
       Compute number density, luminosity density, mean luminosity, and
       selection-weighted integrals over absolute magnitude.
 
-      +++
-      *API:* ``lf.integrals``
+      .. card-footer::
+
+         *API:* ``lf.integrals``
 
    .. grid-item-card::
       :link: magnitudes_and_luminosities
       :link-type: doc
       :shadow: md
 
-      **Magnitudes and luminosities**
-      ^^^
+      .. card-header::
+
+         **Magnitudes and luminosities**
+
       Convert between apparent magnitude, absolute magnitude, luminosity
       distance, luminosity ratios, and Schechter luminosity variables.
 
-      +++
-      *API:* ``lf.magnitudes`` and ``lf.luminosities``
+      .. card-footer::
+
+         *API:* ``lf.magnitudes`` and ``lf.luminosities``
 
    .. grid-item-card::
       :link: redshift_density
       :link-type: doc
       :shadow: md
 
-      **Redshift density**
-      ^^^
+      .. card-header::
+
+         **Redshift density**
+
       Build magnitude-limited and volume-weighted LF redshift trends for survey,
       tomography, and forecasting workflows.
 
-      +++
-      *API:* ``lf.redshift_density``
+      .. card-footer::
+
+         *API:* ``lf.redshift_density``
 
    .. grid-item-card::
       :link: catalog_completeness
       :link-type: doc
       :shadow: md
 
-      **Catalog completeness**
-      ^^^
+      .. card-header::
+
+         **Catalog completeness**
+
       Estimate observed, missing, and out-of-catalog fractions from apparent
       magnitude limits.
 
-      +++
-      *API:* ``lf.completeness``
+      .. card-footer::
+
+         *API:* ``lf.completeness``
 
    .. grid-item-card::
       :link: conditional_luminosity_function
       :link-type: doc
       :shadow: md
 
-      **Conditional luminosity functions**
-      ^^^
+      .. card-header::
+
+         **Conditional luminosity functions**
+
       Work with luminosity distributions conditioned on another variable, such
       as halo mass.
 
-      +++
-      *API:* ``ConditionalLuminosityFunction``
+      .. card-footer::
+
+         *API:* ``ConditionalLuminosityFunction``
 
    .. grid-item-card::
       :link: lf_models/model_registry
       :link-type: doc
       :shadow: md
 
-      **Model registry**
-      ^^^
+      .. card-header::
+
+         **Model registry**
+
       Inspect available model names and model-discovery helpers for ordinary
       and conditional luminosity functions.
 
-      +++
-      *API:* ``available_models()``
+      .. card-footer::
+
+         *API:* ``available_models()``
 
    .. grid-item-card::
       :link: kcorrect_examples
       :link-type: doc
       :shadow: md
 
-      **kcorrect examples**
-      ^^^
+      .. card-header::
+
+         **kcorrect examples**
+
       Build k-corrections with the kcorrect backend and pass correction
       callables into LFKit calculations.
 
-      +++
-      *API:* ``Corrections``
+      .. card-footer::
+
+         *API:* ``Corrections``
 
    .. grid-item-card::
       :link: poggianti_examples
       :link-type: doc
       :shadow: md
 
-      **Poggianti examples**
-      ^^^
+      .. card-header::
+
+         **Poggianti examples**
+
       Evaluate Poggianti tabulated k-corrections and evolution corrections for
       galaxy-type-dependent workflows.
 
-      +++
-      *API:* ``Corrections``
+      .. card-footer::
+
+         *API:* ``Corrections``
 
 
 Luminosity function models

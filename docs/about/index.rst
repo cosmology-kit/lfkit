@@ -25,8 +25,10 @@ Core components
       :link-type: doc
       :shadow: md
 
-      **Photometric Corrections**
-      ^^^
+      .. card-header::
+
+         **Photometric Corrections**
+
 
       Tools for evaluating photometric **k-corrections** and
       **luminosity evolution (e) corrections**, and for working with
@@ -37,8 +39,10 @@ Core components
       :link-type: doc
       :shadow: md
 
-      **Photometric Tools**
-      ^^^
+      .. card-header::
+
+         **Photometric Tools**
+
 
       Utilities for constructing and analyzing galaxy luminosity
       functions, including conversions between observed magnitudes

@@ -9,6 +9,4 @@ lfkit.utils.integrators
    .. autosummary::
    
       integrate_between_variable_bounds
-      safe_divide
-      safe_power10
    
