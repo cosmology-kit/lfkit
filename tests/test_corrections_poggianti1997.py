@@ -1,8 +1,6 @@
-"""Unit tests for ``lfkit.about.poggianti1997``."""
+"""Unit tests for ``lfkit.corrections.poggianti1997``."""
 
 from __future__ import annotations
-
-from pathlib import Path
 
 import numpy as np
 import pytest
@@ -21,7 +19,9 @@ from lfkit.corrections.poggianti1997 import (
 )
 
 
-def test_available_pairs_returns_mapping_with_lists(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_available_pairs_returns_mapping_with_lists(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that available_pairs returns a dict of band -> list of SED labels."""
     import lfkit.corrections.poggianti1997 as mod
 
@@ -29,7 +29,9 @@ def test_available_pairs_returns_mapping_with_lists(monkeypatch: pytest.MonkeyPa
     tab = np.array([(0.0,)], dtype=[("z", "f8")])
 
     # Pretend the table contains two bands and two SEDs
-    monkeypatch.setattr(mod, "available_from_table", lambda _tab: (["r", "i"], ["E", "Sa"]))
+    monkeypatch.setattr(
+        mod, "available_from_table", lambda _tab: (["r", "i"], ["E", "Sa"])
+    )
 
     # Make extract_series succeed only for a subset so we test filtering
     def _fake_extract_series(_tab, *, band, sed, min_points=5):
@@ -48,13 +50,12 @@ def test_available_pairs_returns_mapping_with_lists(monkeypatch: pytest.MonkeyPa
     assert all(isinstance(v, list) for v in out.values())
 
 
-def test_describe_poggianti1997_available_has_expected_keys(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_describe_poggianti1997_available_has_expected_keys(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that describe_poggianti1997_available returns dict with kcorr/ecorr keys."""
     # Fake tables + I/O so we don't depend on packaged data paths in unit tests.
     fake = np.array([(0.0, 0.0)], dtype=[("z", "f8"), ("r_E", "f8")])
-
-    def _fake_resolve(*args, **kwargs):
-        return tmp_path / "x.csv"
 
     def _fake_load(*args, **kwargs):
         return fake
@@ -64,8 +65,7 @@ def test_describe_poggianti1997_available_has_expected_keys(tmp_path: Path, monk
 
     import lfkit.corrections.poggianti1997 as mod
 
-    monkeypatch.setattr(mod, "resolve_packaged_csv", _fake_resolve)
-    monkeypatch.setattr(mod, "load_vizier_csv", _fake_load)
+    monkeypatch.setattr(mod, "load_packaged_csv", _fake_load)
     monkeypatch.setattr(mod, "available_from_table", _fake_available)
 
     out = describe_poggianti1997_available()
@@ -74,15 +74,14 @@ def test_describe_poggianti1997_available_has_expected_keys(tmp_path: Path, monk
     assert set(out["ecorr"].keys()) == {"bands", "seds"}
 
 
-def test_load_poggianti1997_tables_calls_extract_series(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_load_poggianti1997_tables_calls_extract_series(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that load_poggianti1997_tables returns four arrays from extract_series."""
     fake_tab = np.array([(0.0, 0.0)], dtype=[("z", "f8"), ("r_E", "f8")])
     z = np.array([0.0, 0.1, 0.2], float)
     yk = np.array([0.0, 0.2, 0.5], float)
     ye = np.array([0.0, -0.1, -0.2], float)
-
-    def _fake_resolve(*args, **kwargs):
-        return tmp_path / "x.csv"
 
     def _fake_load(*args, **kwargs):
         return fake_tab
@@ -97,8 +96,7 @@ def test_load_poggianti1997_tables_calls_extract_series(tmp_path: Path, monkeypa
 
     import lfkit.corrections.poggianti1997 as mod
 
-    monkeypatch.setattr(mod, "resolve_packaged_csv", _fake_resolve)
-    monkeypatch.setattr(mod, "load_vizier_csv", _fake_load)
+    monkeypatch.setattr(mod, "load_packaged_csv", _fake_load)
     monkeypatch.setattr(mod, "extract_series", _fake_extract)
 
     z_k, kcorr, z_e, ecorr = load_poggianti1997_tables(band="r", sed="E")
@@ -123,6 +121,7 @@ def test_poggianti1997_lookback_time_gyr_is_zero_at_z0() -> None:
 
 def test_build_tlb_to_z_grid_rejects_bad_params() -> None:
     """Tests that _build_tlb_to_z_grid raises ValueError for invalid zmax or nz."""
+
     class _Cosmo:
         pass
 
@@ -200,7 +199,9 @@ def test_z_from_lookback_time_inverts_monotone_mapping() -> None:
         mod.lookback_time_gyr = orig
 
 
-def test_poggianti1997_to_accelerating_redshift_calls_inversion(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_poggianti1997_to_accelerating_redshift_calls_inversion(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that poggianti1997_to_accelerating_redshift delegates through z_from_lookback_time."""
     import lfkit.corrections.poggianti1997 as mod
 
@@ -234,11 +235,15 @@ def test_make_kcorr_interpolator_appends_tail_when_requested() -> None:
     z_k = np.array([0.1, 0.2, 0.3], float)
     k = np.array([0.2, 0.5, 0.9], float)
 
-    K = make_kcorr_interpolator(z_k, k, method="linear", extrapolate=True, z_end=2.0, tail=True)
+    K = make_kcorr_interpolator(
+        z_k, k, method="linear", extrapolate=True, z_end=2.0, tail=True
+    )
     assert np.isfinite(float(K(2.0)))
 
 
-def test_make_kcorr_interpolator_raises_on_nonincreasing_tail_slope(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_make_kcorr_interpolator_raises_on_nonincreasing_tail_slope(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that make_kcorr_interpolator raises ValueError when tail slope cannot be formed."""
     import lfkit.corrections.poggianti1997 as mod
 
@@ -254,24 +259,36 @@ def test_make_kcorr_interpolator_raises_on_nonincreasing_tail_slope(monkeypatch:
     k = np.array([0.2, 0.2, 0.2], float)
 
     with pytest.raises(ValueError, match="Non-increasing z near the tail"):
-        make_kcorr_interpolator(z_k, k, method="linear", extrapolate=True, z_end=2.0, tail=True)
+        make_kcorr_interpolator(
+            z_k, k, method="linear", extrapolate=True, z_end=2.0, tail=True
+        )
 
 
-def test_make_ecorr_interpolator_original_z_does_not_require_cosmo(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_make_ecorr_interpolator_original_z_does_not_require_cosmo(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that make_ecorr_interpolator works without cosmology when original_z is True."""
     import lfkit.corrections.poggianti1997 as mod
 
     # Ensure we would notice if mapping was called.
-    monkeypatch.setattr(mod, "poggianti1997_to_accelerating_redshift", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("called")))
+    monkeypatch.setattr(
+        mod,
+        "poggianti1997_to_accelerating_redshift",
+        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("called")),
+    )
 
     z_e = np.array([0.1, 0.2, 0.3], float)
     e = np.array([-0.1, -0.2, -0.3], float)
-    E = make_ecorr_interpolator(z_e, e, original_z=True, method="linear", extrapolate=True)
+    E = make_ecorr_interpolator(
+        z_e, e, original_z=True, method="linear", extrapolate=True
+    )
     assert callable(E)
     assert np.allclose(float(E(0.0)), 0.0)
 
 
-def test_make_ecorr_interpolator_remaps_when_original_z_false(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_make_ecorr_interpolator_remaps_when_original_z_false(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that make_ecorr_interpolator remaps z_e through lookback-time matching when requested."""
     import lfkit.corrections.poggianti1997 as mod
 

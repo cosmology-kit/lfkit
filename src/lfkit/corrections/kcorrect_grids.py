@@ -22,6 +22,8 @@ labels for different template mixtures used to generate k(z) curves.
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -167,21 +169,21 @@ def build_kcorr_grid_package(
         anchor_z0=True,
     )
 
-    return dict(
-        meta=dict(
-            backend="kcorrect",
-            band_shift=band_shift,
-            redshift_range=(float(z_grid[0]), float(z_grid[-1])),
-            nredshift=int(nredshift),
-            response_dir=str(response_dir) if response_dir is not None else None,
-        ),
-        z=z_grid,
-        responses_in=list(map(str, responses_in)),
-        responses_out=list(map(str, responses_out)),
-        responses_map=list(map(str, responses_map)),
-        anchors=sorted(list(map(str, coeffs_by_anchor.keys()))),
-        K=K,  # mapping: anchor_label -> (Nz, Nband)
-    )
+    return {
+        "meta": {
+            "backend": "kcorrect",
+            "band_shift": band_shift,
+            "redshift_range": (float(z_grid[0]), float(z_grid[-1])),
+            "nredshift": int(nredshift),
+            "response_dir": str(response_dir) if response_dir is not None else None,
+        },
+        "z": z_grid,
+        "responses_in": list(map(str, responses_in)),
+        "responses_out": list(map(str, responses_out)),
+        "responses_map": list(map(str, responses_map)),
+        "anchors": sorted(map(str, coeffs_by_anchor.keys())),
+        "K": K,  # mapping: anchor_label -> (Nz, Nband)
+    }
 
 
 def kcorr_interpolators(
@@ -240,3 +242,60 @@ def kcorr_interpolators(
             )
 
     return out
+
+
+def save_kcorr_package(pkg: dict[str, Any], path: str | Path) -> None:
+    """Save a K-correction grid package as a compressed NPZ file.
+
+    Args:
+        pkg: Grid package containing redshifts, anchors, corrections,
+            filter responses and JSON-serializable metadata.
+        path: Destination filename.
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    anchors = list(pkg["anchors"])
+
+    metadata = {
+        "meta": dict(pkg["meta"]),
+        "responses_in": list(pkg["responses_in"]),
+        "responses_out": list(pkg["responses_out"]),
+        "responses_map": list(pkg["responses_map"]),
+        "anchors": anchors,
+    }
+
+    arrays = {
+        "z": np.asarray(pkg["z"], dtype=float),
+        "meta": np.asarray(json.dumps(metadata)),
+    }
+
+    for label in anchors:
+        arrays[f"K__{label}"] = np.asarray(
+            pkg["K"][label],
+            dtype=float,
+        )
+
+    np.savez_compressed(path, **arrays)
+
+
+def load_kcorr_package(path: str | Path) -> dict[str, Any]:
+    """Load a compressed K-correction grid package without pickle.
+
+    Args:
+        path: Path to an NPZ file created by save_kcorr_package.
+
+    Returns:
+        Grid package compatible with kcorr_interpolators.
+    """
+    with np.load(path, allow_pickle=False) as data:
+        metadata = json.loads(data["meta"].item())
+
+        return {
+            **metadata,
+            "z": np.asarray(data["z"], dtype=float),
+            "K": {
+                label: np.asarray(data[f"K__{label}"], dtype=float)
+                for label in metadata["anchors"]
+            },
+        }

@@ -4,7 +4,7 @@ Loads Poggianti (1997) k- and e-correction curves from CSV tables, builds
 interpolators for those curves (PCHIP, Akima, or linear), and optionally remaps
 the e-correction redshift grid to a target cosmology by matching lookback time.
 
-Table I/O and parsing live in ``lfkit.utils.io``.
+Generic CSV loading lives in ``lfkit.utils.io``.
 Interpolation utilities live in ``lfkit.utils.interpolation``.
 Unit conversions live in ``lfkit.utils.units``.
 """
@@ -12,37 +12,128 @@ Unit conversions live in ``lfkit.utils.units``.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Final
 
 import numpy as np
 
-from lfkit.cosmo.cosmology import cosmo_object as build_cosmo, lookback_time_gyr
+from lfkit.cosmo.cosmology import cosmo_object as build_cosmo
+from lfkit.cosmo.cosmology import lookback_time_gyr
 from lfkit.utils.interpolation import (
     InterpMethod,
     Interpolator,
     build_1d_interpolator,
     prep_strictly_increasing_xy,
 )
-from lfkit.utils.io import (
-    POGGIANTI1997_PKG,
-    available_from_table,
-    extract_series,
-    load_vizier_csv,
-    resolve_packaged_csv,
-)
+from lfkit.utils.io import load_csv, load_packaged_csv
 from lfkit.utils.units import h0_km_s_mpc_to_gyr_inv
 
 __all__ = (
+    "available_from_table",
     "available_pairs",
-    "load_poggianti1997_tables",
     "describe_poggianti1997_available",
-    "poggianti1997_time_since_bb_gyr",
-    "poggianti1997_lookback_time_gyr",
-    "z_from_lookback_time",
-    "poggianti1997_to_accelerating_redshift",
-    "make_kcorr_interpolator",
-    "make_ecorr_interpolator",
     "extract_sed_spectrum",
+    "extract_series",
+    "load_poggianti1997_tables",
+    "make_ecorr_interpolator",
+    "make_kcorr_interpolator",
+    "poggianti1997_lookback_time_gyr",
+    "poggianti1997_time_since_bb_gyr",
+    "poggianti1997_to_accelerating_redshift",
+    "z_from_lookback_time",
 )
+
+
+POGGIANTI1997_PKG: Final[str] = "lfkit.data.poggianti1997"
+
+
+def available_from_table(tab: np.ndarray) -> tuple[list[str], list[str]]:
+    """Return available band labels and SED columns in a Poggianti-style table.
+
+    Args:
+        tab: Structured array loaded from a Poggianti VizieR CSV.
+
+    Returns:
+        A tuple ``(bands, seds)`` where:
+        - ``bands`` are unique values from the ``Filt`` column (sorted)
+        - ``seds`` are SED column names excluding metadata columns
+
+    Raises:
+        ValueError: If required columns are missing.
+    """
+    cols = list(tab.dtype.names or [])
+    if "Filt" not in cols or "z" not in cols:
+        raise ValueError(f"Unexpected Poggianti table columns: {cols}")
+
+    filt_vals = np.asarray(tab["Filt"], dtype=str)
+    bands = sorted({f.strip() for f in filt_vals if f.strip()})
+
+    drop = {"recno", "z", "Filt"}
+    seds = [c for c in cols if c not in drop]
+    return bands, seds
+
+
+def extract_series(
+    tab: np.ndarray,
+    *,
+    band: str,
+    sed: str,
+    min_points: int = 5,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Extract a validated (z, y) correction curve for a band and SED.
+
+    Args:
+        tab: Structured array for a single correction table (k-corr or e-corr).
+        band: Band label to select from the ``Filt`` column.
+        sed: SED column name to extract.
+        min_points: Minimum number of points required after cleaning.
+
+    Returns:
+        A tuple ``(z, y)`` where ``z`` is strictly increasing and ``y`` is the
+        corresponding correction values.
+
+    Raises:
+        ValueError: If the band/SED is not present, has no finite values, or
+            does not contain enough usable samples.
+    """
+    bands, seds = available_from_table(tab)
+
+    if band not in bands:
+        raise ValueError(f"Unknown band={band!r}. Available: {bands}")
+    if sed not in seds:
+        raise ValueError(f"Unknown sed={sed!r}. Available: {seds}")
+
+    f = np.char.strip(np.asarray(tab["Filt"], dtype=str))
+    mask = f == str(band)
+    if not np.any(mask):
+        raise ValueError(f"No rows found for band={band!r}. Available: {bands}")
+
+    z = np.asarray(tab["z"][mask], float)
+    y = np.asarray(tab[sed][mask], float)
+
+    ok = np.isfinite(z) & np.isfinite(y)
+    z = z[ok]
+    y = y[ok]
+    if z.size == 0:
+        raise ValueError(
+            f"No finite values for band={band!r}, sed={sed!r} in this table."
+        )
+
+    order = np.argsort(z, kind="stable")
+    z = z[order]
+    y = y[order]
+
+    keep = np.ones_like(z, dtype=bool)
+    keep[1:] = z[1:] > z[:-1]
+    z = z[keep]
+    y = y[keep]
+
+    if z.size < int(min_points):
+        raise ValueError(
+            f"Too few points for band={band!r}, sed={sed!r}: n={z.size}. "
+            f"Need at least {min_points}."
+        )
+
+    return z, y
 
 
 def available_pairs(tab: np.ndarray, *, min_points: int = 5) -> dict[str, list[str]]:
@@ -93,13 +184,16 @@ def load_poggianti1997_tables(
         ValueError: If the requested (band, sed) is not available or contains
             insufficient usable samples.
     """
-    if kcorr_path is None:
-        kcorr_path = resolve_packaged_csv("kcorr.csv", pkg=POGGIANTI1997_PKG)
-    if ecorr_path is None:
-        ecorr_path = resolve_packaged_csv("ecorr.csv", pkg=POGGIANTI1997_PKG)
-
-    ktab = load_vizier_csv(kcorr_path)
-    etab = load_vizier_csv(ecorr_path)
+    ktab = (
+        load_packaged_csv("kcorr.csv", pkg=POGGIANTI1997_PKG)
+        if kcorr_path is None
+        else load_csv(kcorr_path)
+    )
+    etab = (
+        load_packaged_csv("ecorr.csv", pkg=POGGIANTI1997_PKG)
+        if ecorr_path is None
+        else load_csv(ecorr_path)
+    )
 
     z_k, kcorr = extract_series(ktab, band=band, sed=sed)
     z_e, ecorr = extract_series(etab, band=band, sed=sed)
@@ -124,13 +218,16 @@ def describe_poggianti1997_available(
         - ``"bands"``: list of available band labels
         - ``"seds"``: list of available SED column labels
     """
-    if kcorr_path is None:
-        kcorr_path = resolve_packaged_csv("kcorr.csv", pkg=POGGIANTI1997_PKG)
-    if ecorr_path is None:
-        ecorr_path = resolve_packaged_csv("ecorr.csv", pkg=POGGIANTI1997_PKG)
-
-    ktab = load_vizier_csv(kcorr_path)
-    etab = load_vizier_csv(ecorr_path)
+    ktab = (
+        load_packaged_csv("kcorr.csv", pkg=POGGIANTI1997_PKG)
+        if kcorr_path is None
+        else load_csv(kcorr_path)
+    )
+    etab = (
+        load_packaged_csv("ecorr.csv", pkg=POGGIANTI1997_PKG)
+        if ecorr_path is None
+        else load_csv(ecorr_path)
+    )
 
     k_bands, k_seds = available_from_table(ktab)
     e_bands, e_seds = available_from_table(etab)
@@ -357,7 +454,7 @@ def extract_sed_spectrum(
     """Extract a Poggianti sed.csv column as (wave_A, flux) in rest frame.
 
     Args:
-        sed_tab: Table returned by lfkit.utils.io.load_vizier_csv for sed.csv.
+        sed_tab: Table returned by lfkit.utils.io.load_csv for sed.csv.
         sed_col: Column name in sed.csv, e.g. "logF03".
 
     Returns:

@@ -11,7 +11,7 @@ accessed at runtime via ``importlib.resources``.
 
 To run this script, simply execute it from the command line:
 
-    python scripts/download_poggianti97_data.py
+    python -m lfkit.data.poggianti1997.download
 
 This script is intended to be run manually during development
 or data refresh.
@@ -31,7 +31,7 @@ CATALOG = "J/A+AS/122/399"
 # Package data directory where CSVs are stored.
 # Resolve relative to this file so running tests/scripts from repo root
 # cannot accidentally write into the current working directory.
-PKG_DATADIR = Path(__file__).resolve().parents[1] / "data" / "poggianti1997"
+PKG_DATADIR = Path(__file__).resolve().parent
 
 
 def main() -> None:
@@ -56,7 +56,7 @@ def main() -> None:
     print(f"Fetched {len(tables)} table(s) from {CATALOG}")
 
     saved = []
-    for key in tables.keys():
+    for key in tables.keys():  # noqa: SIM118 -- TableList iterates over tables.
         table = tables[key]
         short_name = key.split("/")[-1]
         path = PKG_DATADIR / f"{short_name}.csv"
