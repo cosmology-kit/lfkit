@@ -1,11 +1,11 @@
-"""Unit tests for ``lfkit.photometry.lf_parameter_models``."""
+"""Unit tests for ``lfkit.parameters.evolution``."""
 
 from __future__ import annotations
 
 import numpy as np
 import pytest
 
-from lfkit.luminosity_functions.parameter_models import (
+from lfkit.parameters.evolution import (
     ALPHA_MODELS,
     M_STAR_MODELS,
     PHI_STAR_MODELS,
@@ -289,6 +289,7 @@ def test_available_lf_parameter_models_returns_sorted_builtin_names() -> None:
 
 def test_register_phi_star_model_adds_custom_model() -> None:
     """Tests that register_phi_star_model adds a custom phi_star model."""
+
     def custom_phi(z: np.ndarray, *, amplitude: float) -> np.ndarray:
         return np.full_like(z, amplitude, dtype=float)
 
@@ -310,6 +311,7 @@ def test_register_phi_star_model_adds_custom_model() -> None:
 
 def test_register_m_star_model_adds_custom_model() -> None:
     """Tests that register_m_star_model adds a custom M_star model."""
+
     def custom_m_star(z: np.ndarray, *, base: float, slope: float) -> np.ndarray:
         return np.asarray(base + slope * z, dtype=float)
 
@@ -331,6 +333,7 @@ def test_register_m_star_model_adds_custom_model() -> None:
 
 def test_register_alpha_model_adds_custom_model() -> None:
     """Tests that register_alpha_model adds a custom alpha model."""
+
     def custom_alpha(z: np.ndarray, *, alpha: float) -> np.ndarray:
         return np.full_like(z, alpha, dtype=float)
 
@@ -352,6 +355,7 @@ def test_register_alpha_model_adds_custom_model() -> None:
 
 def test_evaluate_lf_parameters_uses_registered_custom_models() -> None:
     """Tests that evaluate_lf_parameters can use registered custom models."""
+
     def custom_phi(z: np.ndarray, *, amplitude: float) -> np.ndarray:
         return np.full_like(z, amplitude, dtype=float)
 
@@ -389,6 +393,7 @@ def test_evaluate_lf_parameters_uses_registered_custom_models() -> None:
 
 def test_register_parameter_model_raises_for_empty_name() -> None:
     """Tests that registering a model with an empty name raises an error."""
+
     def custom_model(z: np.ndarray) -> np.ndarray:
         return np.asarray(z, dtype=float)
 
@@ -404,6 +409,7 @@ def test_register_parameter_model_raises_for_non_callable_model() -> None:
 
 def test_register_parameter_model_raises_for_duplicate_without_overwrite() -> None:
     """Tests that registering a duplicate model without overwrite raises an error."""
+
     def custom_model(z: np.ndarray) -> np.ndarray:
         return np.asarray(z, dtype=float)
 
@@ -418,6 +424,7 @@ def test_register_parameter_model_raises_for_duplicate_without_overwrite() -> No
 
 def test_register_parameter_model_allows_duplicate_with_overwrite() -> None:
     """Tests that registering a duplicate model with overwrite replaces the model."""
+
     def first_model(z: np.ndarray) -> np.ndarray:
         return np.full_like(z, 1.0, dtype=float)
 

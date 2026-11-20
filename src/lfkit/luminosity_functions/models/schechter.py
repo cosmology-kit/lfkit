@@ -22,7 +22,7 @@ from collections.abc import Mapping
 import numpy as np
 from scipy.special import gamma, gammaincc
 
-from lfkit.luminosity_functions.parameter_models import evaluate_lf_parameters
+from lfkit.parameters.evolution import evaluate_lf_parameters
 from lfkit.photometry.luminosities import luminosity_ratio
 from lfkit.photometry.magnitudes import absolute_magnitude
 from lfkit.utils.types import Cosmology, FloatArray, FloatInput, ParameterValue

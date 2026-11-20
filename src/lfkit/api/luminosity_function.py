@@ -15,18 +15,18 @@ from lfkit.api._namespaces import (
     LFMagnitudesAPI,
     LFRedshiftDensityAPI,
 )
-from lfkit.luminosity_functions.parameter_models import (
-    available_lf_parameter_models,
-    evaluate_lf_parameters,
-    register_alpha_model,
-    register_m_star_model,
-    register_phi_star_model,
-)
 from lfkit.luminosity_functions.registry import (
     LF_FROM_M_MODELS,
     LF_MODELS,
     get_lf_from_m_model,
     get_lf_model,
+)
+from lfkit.parameters.evolution import (
+    available_lf_parameter_models,
+    evaluate_lf_parameters,
+    register_alpha_model,
+    register_m_star_model,
+    register_phi_star_model,
 )
 from lfkit.utils.types import (
     Cosmology,

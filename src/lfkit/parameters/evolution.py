@@ -1,4 +1,4 @@
-r"""luminosity function parameter-evolution models for LFKit.
+r"""Luminosity function parameter-evolution models.
 
 This module provides helper functions for evaluating redshift-dependent
 luminosity function parameters such as ``phi_star(z)``, ``M_star(z)``, and
