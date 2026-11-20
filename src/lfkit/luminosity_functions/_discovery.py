@@ -8,7 +8,6 @@ from collections.abc import Callable
 
 import lfkit.luminosity_functions.models as models_pkg
 
-
 _SKIP_MODULES = {
     "modifiers",
 }

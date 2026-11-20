@@ -29,28 +29,23 @@ from typing import Any
 
 import numpy as np
 
+from lfkit.utils.evaluators import evaluate_parameter
+from lfkit.utils.integrators import integrate_between_variable_bounds
+from lfkit.utils.numerics import safe_divide
 from lfkit.utils.types import FloatArray, FloatInput, LuminosityFunction
-from lfkit.utils.integrators import integrate_between_variable_bounds, safe_divide
-from lfkit.utils.evaluators import (
-    evaluate_optional_redshift_callable,
-    evaluate_positive_redshift_callable,
-    evaluate_lf_on_grid,
-    evaluate_weight_on_grid,
-)
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
+    "cumulative_number_density",
+    "cumulative_selection_function",
+    "integrated_luminosity_density",
     "integrated_number_density",
     "lf_weighted_integral",
-    "selection_weighted_number_density",
-    "integrated_luminosity_density",
-    "mean_luminosity",
-    "cumulative_number_density",
-    "magnitude_window_number_density",
-    "selection_fraction",
-    "cumulative_selection_function",
     "luminosity_weight",
+    "magnitude_window_number_density",
+    "mean_luminosity",
+    "selection_fraction",
+    "selection_weighted_number_density",
 ]
 
 __api_aliases__ = {
@@ -796,28 +791,23 @@ def _resolve_magnitude_window_bound(
         apparent_mag,
         name=f"apparent_m_{bound_name}",
     )
-    luminosity_distance_mpc = evaluate_positive_redshift_callable(
+    luminosity_distance_mpc = evaluate_parameter(
         luminosity_distance_mpc_fn,
         z,
         name="luminosity_distance_mpc_fn",
+        domain="positive",
     )
 
-    k_correction = evaluate_optional_redshift_callable(
-        k_correction_fn,
+    k_correction = evaluate_parameter(
+        k_correction_fn if k_correction_fn is not None else 0.0,
         z,
         name="k_correction_fn",
     )
-    e_correction = evaluate_optional_redshift_callable(
-        e_correction_fn,
+    e_correction = evaluate_parameter(
+        e_correction_fn if e_correction_fn is not None else 0.0,
         z,
         name="e_correction_fn",
     )
-
-    if k_correction is None:
-        k_correction = np.zeros_like(z, dtype=float)
-
-    if e_correction is None:
-        e_correction = np.zeros_like(z, dtype=float)
 
     distance_modulus = 5.0 * np.log10(luminosity_distance_mpc) + 25.0
 
@@ -862,22 +852,26 @@ def _integrated_lf_between_bounds(
         absolute_mag: FloatArray,
         redshift: FloatArray,
     ) -> FloatArray:
-        phi = evaluate_lf_on_grid(
+        phi = evaluate_parameter(
             lf,
-            m_grid=absolute_mag,
-            z_grid=redshift,
+            absolute_mag,
+            redshift,
+            name="lf",
+            domain="non_negative",
         )
 
         if weight_fn is None:
             return phi
 
-        weight = evaluate_weight_on_grid(
+        weight = evaluate_parameter(
             weight_fn,
-            m_grid=absolute_mag,
-            z_grid=redshift,
+            absolute_mag,
+            redshift,
+            name="weight_fn",
+            domain="non_negative",
         )
 
-        return np.asarray(phi * weight, dtype=float)
+        return phi * weight
 
     return integrate_between_variable_bounds(
         z_arr,

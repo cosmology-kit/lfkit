@@ -5,11 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from lfkit.utils.integrators import (
-    integrate_between_variable_bounds,
-    safe_divide,
-    safe_power10,
-)
+from lfkit.utils.integrators import integrate_between_variable_bounds
 
 
 def constant_integrand(x: np.ndarray, y: np.ndarray) -> np.ndarray:
@@ -100,7 +96,9 @@ def test_integrate_between_variable_bounds_returns_zero_for_empty_ranges() -> No
     np.testing.assert_allclose(result, np.array([0.0, 0.0, 0.0]))
 
 
-def test_integrate_between_variable_bounds_handles_mixed_valid_and_empty_ranges() -> None:
+def test_integrate_between_variable_bounds_handles_mixed_valid_and_empty_ranges() -> (
+    None
+):
     """Tests that only valid intervals contribute to the integral."""
     result = integrate_between_variable_bounds(
         [0.1, 0.2, 0.3],
@@ -159,7 +157,9 @@ def test_integrate_between_variable_bounds_accepts_scalar_integrand_output() -> 
     np.testing.assert_allclose(result, np.array([6.0, 6.0]))
 
 
-def test_integrate_between_variable_bounds_accepts_broadcastable_integrand_output() -> None:
+def test_integrate_between_variable_bounds_accepts_broadcastable_integrand_output() -> (
+    None
+):
     """Tests that broadcastable integrand output is expanded to the grid shape."""
 
     def broadcastable_integrand(x: np.ndarray, y: np.ndarray) -> np.ndarray:
@@ -214,7 +214,7 @@ def test_integrate_between_variable_bounds_rejects_small_grid() -> None:
 
 def test_integrate_between_variable_bounds_rejects_nonfinite_lower_bound() -> None:
     """Tests that lower integration bounds must be finite."""
-    with pytest.raises(ValueError, match="lower must contain only finite values"):
+    with pytest.raises(ValueError, match="lower contains NaN or infinite values"):
         integrate_between_variable_bounds(
             [0.1, 0.2],
             lower=np.nan,
@@ -226,7 +226,7 @@ def test_integrate_between_variable_bounds_rejects_nonfinite_lower_bound() -> No
 
 def test_integrate_between_variable_bounds_rejects_nonfinite_upper_bound() -> None:
     """Tests that upper integration bounds must be finite."""
-    with pytest.raises(ValueError, match="upper must contain only finite values"):
+    with pytest.raises(ValueError, match="upper contains NaN or infinite values"):
         integrate_between_variable_bounds(
             [0.1, 0.2],
             lower=0.0,
@@ -259,7 +259,7 @@ def test_integrate_between_variable_bounds_rejects_unbroadcastable_integrand() -
 
     with pytest.raises(
         ValueError,
-        match="integrand_fn\\(x, y\\) must return values broadcastable",
+        match="integrand_fn must return values broadcastable",
     ):
         integrate_between_variable_bounds(
             [0.1, 0.2],
@@ -280,7 +280,7 @@ def test_integrate_between_variable_bounds_rejects_nonfinite_integrand_values() 
 
     with pytest.raises(
         ValueError,
-        match="integrand_fn\\(x, y\\) returned non-finite values",
+        match="integrand_fn contains NaN or infinite values",
     ):
         integrate_between_variable_bounds(
             [0.1, 0.2],
@@ -289,91 +289,6 @@ def test_integrate_between_variable_bounds_rejects_nonfinite_integrand_values() 
             integrand_fn=bad_integrand,
             n_grid=64,
         )
-
-
-def test_safe_divide_returns_ratio_for_positive_denominator() -> None:
-    """Tests that safe division returns the ordinary ratio for positive denominators."""
-    result = safe_divide(
-        np.array([2.0, 6.0, 12.0]),
-        np.array([1.0, 2.0, 3.0]),
-    )
-
-    np.testing.assert_allclose(result, np.array([2.0, 3.0, 4.0]))
-
-
-def test_safe_divide_returns_zero_for_zero_denominator() -> None:
-    """Tests that safe division returns zero for zero denominators."""
-    result = safe_divide(
-        np.array([1.0, 2.0, 3.0]),
-        np.array([1.0, 0.0, 2.0]),
-    )
-
-    np.testing.assert_allclose(result, np.array([1.0, 0.0, 1.5]))
-
-
-def test_safe_divide_returns_zero_for_negative_denominator() -> None:
-    """Tests that safe division returns zero for negative denominators."""
-    result = safe_divide(
-        np.array([1.0, 2.0, 3.0]),
-        np.array([1.0, -1.0, 2.0]),
-    )
-
-    np.testing.assert_allclose(result, np.array([1.0, 0.0, 1.5]))
-
-
-def test_safe_divide_supports_scalar_inputs() -> None:
-    """Tests that safe division supports scalar inputs."""
-    result = safe_divide(4.0, 2.0)
-
-    assert result.shape == ()
-    assert result == pytest.approx(2.0)
-
-
-def test_safe_divide_returns_zero_for_scalar_zero_denominator() -> None:
-    """Tests that safe division returns zero for scalar zero denominator."""
-    result = safe_divide(4.0, 0.0)
-
-    assert result.shape == ()
-    assert result == pytest.approx(0.0)
-
-
-def test_safe_divide_supports_broadcastable_inputs() -> None:
-    """Tests that safe division supports broadcastable numerator and denominator."""
-    result = safe_divide(
-        np.array([[2.0], [4.0]], dtype=float),
-        np.array([1.0, 2.0, 0.0], dtype=float),
-    )
-
-    expected = np.array(
-        [
-            [2.0, 1.0, 0.0],
-            [4.0, 2.0, 0.0],
-        ],
-        dtype=float,
-    )
-    np.testing.assert_allclose(result, expected)
-
-
-def test_safe_divide_rejects_unbroadcastable_inputs() -> None:
-    """Tests that safe division requires broadcastable inputs."""
-    with pytest.raises(ValueError):
-        safe_divide(
-            np.ones((2, 3), dtype=float),
-            np.ones((4,), dtype=float),
-        )
-
-
-def test_integrators_exports_expected_public_names() -> None:
-    """Tests that integrators exposes the expected public API names."""
-    import lfkit.utils.integrators as integrators
-
-    expected = {
-        "integrate_between_variable_bounds",
-        "safe_divide",
-        "safe_power10",
-    }
-
-    assert set(integrators.__all__) == expected
 
 
 def test_integrate_between_variable_bounds_returns_float64_array() -> None:
@@ -462,91 +377,8 @@ def test_integrate_between_variable_bounds_converts_list_integrand_output() -> N
     np.testing.assert_allclose(result, np.array([2.0, 4.0]))
 
 
-def test_safe_divide_uses_custom_fill_value() -> None:
-    """Tests that safe division uses the requested fill value."""
-    result = safe_divide(
-        np.array([1.0, 2.0, 3.0]),
-        np.array([1.0, 0.0, -1.0]),
-        fill_value=-99.0,
-    )
+def test_integrators_exports_expected_public_names() -> None:
+    """Tests the public integration API."""
+    from lfkit.utils import integrators
 
-    np.testing.assert_allclose(result, np.array([1.0, -99.0, -99.0]))
-
-
-def test_safe_divide_replaces_nonfinite_results() -> None:
-    """Tests that safe division replaces non-finite results with fill value."""
-    result = safe_divide(
-        np.array([np.inf, 2.0, np.nan]),
-        np.array([1.0, 1.0, 1.0]),
-        fill_value=-1.0,
-    )
-
-    np.testing.assert_allclose(result, np.array([-1.0, 2.0, -1.0]))
-
-
-def test_safe_divide_returns_float64_array() -> None:
-    """Tests that safe division returns a float64 array."""
-    result = safe_divide(
-        np.array([1, 2, 3]),
-        np.array([1, 2, 3]),
-    )
-
-    assert isinstance(result, np.ndarray)
-    assert result.dtype == np.float64
-
-
-def test_safe_power10_matches_base_ten_power() -> None:
-    """Tests that safe_power10 matches ordinary base-ten powers."""
-    result = safe_power10(np.array([-1.0, 0.0, 2.0]))
-
-    np.testing.assert_allclose(result, np.array([0.1, 1.0, 100.0]))
-
-
-def test_safe_power10_clips_large_positive_exponents() -> None:
-    """Tests that safe_power10 clips large positive exponents."""
-    result = safe_power10(
-        np.array([1.0, 5.0]),
-        min_exponent=-2.0,
-        max_exponent=2.0,
-    )
-
-    np.testing.assert_allclose(result, np.array([10.0, 100.0]))
-
-
-def test_safe_power10_clips_large_negative_exponents() -> None:
-    """Tests that safe_power10 clips large negative exponents."""
-    result = safe_power10(
-        np.array([-5.0, -1.0]),
-        min_exponent=-2.0,
-        max_exponent=2.0,
-    )
-
-    np.testing.assert_allclose(result, np.array([0.01, 0.1]))
-
-
-def test_safe_power10_supports_scalar_input() -> None:
-    """Tests that safe_power10 supports scalar input."""
-    result = safe_power10(2.0)
-
-    assert result.shape == ()
-    assert result == pytest.approx(100.0)
-
-
-def test_safe_power10_returns_float64_array() -> None:
-    """Tests that safe_power10 returns a float64 array."""
-    result = safe_power10(np.array([0, 1, 2]))
-
-    assert isinstance(result, np.ndarray)
-    assert result.dtype == np.float64
-
-
-def test_safe_power10_rejects_nan_exponent() -> None:
-    """Tests that safe_power10 rejects NaN exponents."""
-    with pytest.raises(ValueError, match="exponent contains NaN"):
-        safe_power10(np.nan)
-
-
-def test_safe_power10_rejects_infinite_exponent() -> None:
-    """Tests that safe_power10 rejects infinite exponents."""
-    with pytest.raises(ValueError, match="exponent contains NaN or infinite values"):
-        safe_power10(np.inf)
+    assert integrators.__all__ == ["integrate_between_variable_bounds"]

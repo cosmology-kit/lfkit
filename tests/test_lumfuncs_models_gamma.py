@@ -10,7 +10,7 @@ from lfkit.luminosity_functions.models.gamma import (
     generalized_gamma_lf,
 )
 from lfkit.luminosity_functions.models.schechter import schechter
-from lfkit.utils.integrators import safe_power10
+from lfkit.utils.numerics import safe_power10
 
 
 def test_gamma_lf_returns_positive_finite_values() -> None:
@@ -64,13 +64,7 @@ def test_gamma_lf_matches_manual_formula() -> None:
     )
 
     x = safe_power10(-0.4 * (m - m_star))
-    expected = (
-        0.4
-        * np.log(10.0)
-        * phi_star
-        * x ** (alpha + 1.0)
-        * np.exp(-x)
-    )
+    expected = 0.4 * np.log(10.0) * phi_star * x ** (alpha + 1.0) * np.exp(-x)
 
     np.testing.assert_allclose(result, expected)
 
@@ -88,7 +82,9 @@ def test_gamma_lf_rejects_negative_phi_star() -> None:
 
 def test_gamma_lf_rejects_nonfinite_absolute_mag() -> None:
     """Tests that gamma_lf rejects non-finite absolute magnitudes."""
-    with pytest.raises(ValueError, match="absolute_mag contains NaN or infinite values"):
+    with pytest.raises(
+        ValueError, match="absolute_mag contains NaN or infinite values"
+    ):
         gamma_lf(
             [np.nan],
             phi_star=1.0e-3,
@@ -221,12 +217,7 @@ def test_generalized_gamma_lf_matches_manual_formula() -> None:
 
     x = safe_power10(-0.4 * (m - m_star))
     expected = (
-        0.4
-        * np.log(10.0)
-        * beta
-        * phi_star
-        * x ** (alpha + 1.0)
-        * np.exp(-(x**beta))
+        0.4 * np.log(10.0) * beta * phi_star * x ** (alpha + 1.0) * np.exp(-(x**beta))
     )
 
     np.testing.assert_allclose(result, expected)
@@ -282,7 +273,9 @@ def test_generalized_gamma_lf_rejects_nonfinite_beta() -> None:
 
 def test_generalized_gamma_lf_rejects_nonfinite_absolute_mag() -> None:
     """Tests that generalized_gamma_lf rejects non-finite absolute magnitudes."""
-    with pytest.raises(ValueError, match="absolute_mag contains NaN or infinite values"):
+    with pytest.raises(
+        ValueError, match="absolute_mag contains NaN or infinite values"
+    ):
         generalized_gamma_lf(
             [np.inf],
             phi_star=1.0e-3,

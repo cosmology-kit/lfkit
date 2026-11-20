@@ -162,7 +162,7 @@ def test_integrated_number_density_rejects_nonfinite_lf_values() -> None:
         """Return non-finite LF values."""
         return np.full_like(m_abs, np.nan, dtype=float)
 
-    with pytest.raises(ValueError, match="lf\\(M, z\\) returned non-finite values"):
+    with pytest.raises(ValueError, match="lf contains NaN or infinite values"):
         li.integrated_number_density(
             [0.1, 0.2],
             bad_lf,
@@ -178,7 +178,7 @@ def test_integrated_number_density_rejects_negative_lf_values() -> None:
         """Return negative LF values."""
         return -np.ones_like(m_abs, dtype=float)
 
-    with pytest.raises(ValueError, match="lf\\(M, z\\) must be non-negative"):
+    with pytest.raises(ValueError, match="lf must be non-negative"):
         li.integrated_number_density(
             [0.1, 0.2],
             bad_lf,
@@ -196,7 +196,7 @@ def test_integrated_number_density_rejects_unbroadcastable_lf_values() -> None:
 
     with pytest.raises(
         ValueError,
-        match="lf\\(M, z\\) must return values broadcastable",
+        match="lf must return values broadcastable",
     ):
         li.integrated_number_density(
             [0.1, 0.2],
@@ -251,7 +251,7 @@ def test_lf_weighted_integral_rejects_nonfinite_weight_values() -> None:
         """Return non-finite weights."""
         return np.full_like(m_abs, np.nan, dtype=float)
 
-    with pytest.raises(ValueError, match="weight_fn\\(M, z\\) returned non-finite values"):
+    with pytest.raises(ValueError, match="weight_fn contains NaN or infinite values"):
         li.lf_weighted_integral(
             [0.1, 0.2],
             constant_lf,
@@ -268,7 +268,7 @@ def test_lf_weighted_integral_rejects_negative_weight_values() -> None:
         """Return negative weights."""
         return -np.ones_like(m_abs, dtype=float)
 
-    with pytest.raises(ValueError, match="weight_fn\\(M, z\\) must be non-negative"):
+    with pytest.raises(ValueError, match="weight_fn must be non-negative"):
         li.lf_weighted_integral(
             [0.1, 0.2],
             constant_lf,
@@ -287,7 +287,7 @@ def test_lf_weighted_integral_rejects_unbroadcastable_weight_values() -> None:
 
     with pytest.raises(
         ValueError,
-        match="weight_fn\\(M, z\\) must return values broadcastable",
+        match="weight_fn must return values broadcastable",
     ):
         li.lf_weighted_integral(
             [0.1, 0.2],
@@ -818,7 +818,9 @@ def test_api_aliases_cover_public_exports() -> None:
 
 def test_luminosity_weight_rejects_nonfinite_absolute_mag() -> None:
     """Tests that luminosity weights reject non-finite magnitudes."""
-    with pytest.raises(ValueError, match="absolute_mag contains NaN or infinite values"):
+    with pytest.raises(
+        ValueError, match="absolute_mag contains NaN or infinite values"
+    ):
         li.luminosity_weight([0.0, np.nan, 1.0])
 
 
@@ -853,7 +855,7 @@ def test_selection_weighted_number_density_rejects_negative_selection() -> None:
     def selection_fn(m_abs: np.ndarray, z: np.ndarray) -> np.ndarray:
         return -np.ones_like(m_abs, dtype=float)
 
-    with pytest.raises(ValueError, match="weight_fn\\(M, z\\) must be non-negative"):
+    with pytest.raises(ValueError, match="weight_fn must be non-negative"):
         li.selection_weighted_number_density(
             [0.1, 0.2],
             constant_lf,
@@ -886,7 +888,7 @@ def test_magnitude_window_density_rejects_nonpositive_luminosity_distance() -> N
 
     with pytest.raises(
         ValueError,
-        match="luminosity_distance_mpc_fn\\(z\\) must return positive values",
+        match="luminosity_distance_mpc_fn must be positive",
     ):
         li.magnitude_window_number_density(
             [0.1, 0.2],
@@ -906,7 +908,9 @@ def test_magnitude_window_density_rejects_nonfinite_k_correction() -> None:
     def k_correction_fn(z: np.ndarray) -> np.ndarray:
         return np.full_like(z, np.nan, dtype=float)
 
-    with pytest.raises(ValueError, match="k_correction_fn\\(z\\) returned non-finite values"):
+    with pytest.raises(
+        ValueError, match="k_correction_fn contains NaN or infinite values"
+    ):
         li.magnitude_window_number_density(
             [0.1, 0.2],
             constant_lf,

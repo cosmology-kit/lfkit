@@ -8,12 +8,11 @@ from lfkit.photometry.luminosities import luminosity_ratio
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
-    "saunders_lf",
-    "evolving_saunders_lf",
     "double_saunders_lf",
+    "evolving_saunders_lf",
     "generalized_saunders_lf",
+    "saunders_lf",
 ]
 
 
