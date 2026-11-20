@@ -7,12 +7,11 @@ from collections.abc import Callable
 import numpy as np
 
 from lfkit.luminosity_functions.models.gaussian import lognormal_lf
-from lfkit.luminosity_functions.models.schechter import schechter
 from lfkit.luminosity_functions.models.modifiers import apply_luminosity_cutoff
+from lfkit.luminosity_functions.models.schechter import schechter
 from lfkit.photometry.luminosities import magnitude_difference_from_luminosity_ratio
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
-
 
 __all__ = [
     "two_component_lf",

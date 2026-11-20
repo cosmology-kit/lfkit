@@ -20,16 +20,16 @@ from __future__ import annotations
 
 import numpy as np
 
+from lfkit.utils.numerics import safe_power10
 from lfkit.utils.types import FloatArray, FloatInput
-from lfkit.utils.integrators import safe_power10
 from lfkit.utils.validators import validate_array
 
 __all__ = (
+    "luminosity_from_magnitude",
     "luminosity_ratio",
     "luminosity_ratio_from_magnitudes",
-    "magnitude_difference_from_luminosity_ratio",
     "luminosity_weight_from_magnitude",
-    "luminosity_from_magnitude",
+    "magnitude_difference_from_luminosity_ratio",
 )
 
 __api_aliases__ = {

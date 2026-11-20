@@ -31,8 +31,10 @@ the examples section for executable workflows with plots.
       :link-type: doc
       :shadow: md
 
-      **Theory and overview**
-      ^^^
+      .. card-header::
+
+         **Theory and overview**
+
       Core concepts, conventions, and package scope, including luminosity
       functions, photometry, corrections, and catalog selection.
 
@@ -41,8 +43,10 @@ the examples section for executable workflows with plots.
       :link-type: doc
       :shadow: md
 
-      **Examples**
-      ^^^
+      .. card-header::
+
+         **Examples**
+
       Runnable examples for luminosity function models, magnitude conversions,
       integrals, corrections, redshift trends, and catalog completeness.
 

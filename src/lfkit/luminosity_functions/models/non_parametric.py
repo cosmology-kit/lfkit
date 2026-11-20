@@ -31,21 +31,20 @@ import numpy as np
 
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import (
-    validate_array,
-    validate_tabulated_grid,
-    validate_binned_grid,
-    validate_2d_tabulated_grid,
     validate_2d_binned_grid,
+    validate_2d_tabulated_grid,
+    validate_array,
+    validate_binned_grid,
+    validate_tabulated_grid,
 )
 
-
 __all__ = [
-    "tabulated_lf",
     "binned_lf",
-    "redshift_tabulated_lf",
-    "redshift_binned_lf",
-    "distance_tabulated_lf",
     "distance_binned_lf",
+    "distance_tabulated_lf",
+    "redshift_binned_lf",
+    "redshift_tabulated_lf",
+    "tabulated_lf",
 ]
 
 

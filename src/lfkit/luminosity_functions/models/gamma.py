@@ -12,10 +12,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from lfkit.utils.integrators import safe_power10
+from lfkit.utils.numerics import safe_power10
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
-
 
 __all__ = [
     "gamma_lf",

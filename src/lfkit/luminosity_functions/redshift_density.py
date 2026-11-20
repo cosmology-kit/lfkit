@@ -28,13 +28,9 @@ import numpy as np
 
 from lfkit.luminosity_functions.integrals import integrated_number_density
 from lfkit.photometry.magnitudes import absolute_magnitude_from_luminosity_distance
-from lfkit.utils.evaluators import (
-    evaluate_non_negative_redshift_callable,
-    evaluate_positive_redshift_callable,
-)
+from lfkit.utils.evaluators import evaluate_parameter
 from lfkit.utils.types import FloatArray, FloatInput, LuminosityFunction
 from lfkit.utils.validators import validate_array
-
 
 __all__ = [
     "lf_integrated_number_density",
@@ -112,10 +108,11 @@ def lf_integrated_number_density(
     if not np.isfinite(m_bright):
         raise ValueError("m_bright must be finite.")
 
-    luminosity_distance = evaluate_positive_redshift_callable(
+    luminosity_distance = evaluate_parameter(
         luminosity_distance_mpc_fn,
         z_arr,
         name="luminosity_distance_mpc_fn",
+        domain="positive",
     )
 
     k_correction_arr = _optional_correction_array(
@@ -211,10 +208,11 @@ def lf_weighted_redshift_density(
         evolution_correction=evolution_correction,
     )
 
-    volume_weight = evaluate_non_negative_redshift_callable(
+    volume_weight = evaluate_parameter(
         volume_weight_fn,
         z_arr,
         name="volume_weight_fn",
+        domain="non_negative",
     )
 
     nz = n_lf * volume_weight

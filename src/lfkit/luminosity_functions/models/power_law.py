@@ -8,12 +8,11 @@ from lfkit.photometry.luminosities import luminosity_ratio
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
-    "power_law_lf",
-    "double_power_law_lf",
     "broken_power_law_lf",
+    "double_power_law_lf",
     "log_power_law_lf",
+    "power_law_lf",
 ]
 
 

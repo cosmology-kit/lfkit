@@ -10,7 +10,6 @@ from lfkit.photometry.luminosities import luminosity_ratio
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
     "apply_luminosity_cutoff",
 ]

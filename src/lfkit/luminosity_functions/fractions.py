@@ -10,17 +10,17 @@ from __future__ import annotations
 import numpy as np
 
 from lfkit.luminosity_functions.integrals import integrated_number_density
-from lfkit.utils.integrators import safe_divide
+from lfkit.utils.numerics import safe_divide
 from lfkit.utils.types import FloatArray, FloatInput, LuminosityFunction
 from lfkit.utils.validators import validate_magnitude_range
 
 __all__ = [
-    "fraction_from_luminosity_functions",
-    "complement_fraction_from_luminosity_functions",
-    "red_fraction_from_luminosity_functions",
     "blue_fraction_from_luminosity_functions",
-    "red_blue_fractions_from_luminosity_functions",
+    "complement_fraction_from_luminosity_functions",
+    "fraction_from_luminosity_functions",
     "population_densities_from_luminosity_functions",
+    "red_blue_fractions_from_luminosity_functions",
+    "red_fraction_from_luminosity_functions",
 ]
 
 __api_aliases__ = {

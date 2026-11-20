@@ -7,14 +7,14 @@ import numpy as np
 from lfkit.utils.types import FloatArray, FloatInput
 
 __all__ = [
+    "validate_2d_binned_grid",
+    "validate_2d_tabulated_grid",
     "validate_array",
+    "validate_binned_grid",
     "validate_luminosity_distance",
     "validate_magnitude_range",
     "validate_strictly_increasing_1d",
     "validate_tabulated_grid",
-    "validate_binned_grid",
-    "validate_2d_tabulated_grid",
-    "validate_2d_binned_grid",
 ]
 
 
@@ -24,8 +24,8 @@ def validate_array(
     name: str,
     allow_negative: bool = True,
 ) -> FloatArray:
-    """Return a finite float array."""
-    arr = np.asarray(x, dtype=float)
+    """Return a finite float64 array."""
+    arr = np.asarray(x, dtype=np.float64)
 
     if not np.all(np.isfinite(arr)):
         raise ValueError(f"{name} contains NaN or infinite values.")
@@ -33,7 +33,21 @@ def validate_array(
     if not allow_negative and np.any(arr < 0):
         raise ValueError(f"{name} contains negative values, which are not allowed.")
 
-    return np.asarray(arr, dtype=np.float64)
+    return arr
+
+
+def _validate_grid_values(
+    values: FloatArray,
+    *,
+    name: str,
+    positive: bool,
+) -> None:
+    """Validate the sign of grid values."""
+    if positive:
+        if np.any(values <= 0.0):
+            raise ValueError(f"{name} must be positive.")
+    elif np.any(values < 0.0):
+        raise ValueError(f"{name} must be non-negative.")
 
 
 def validate_luminosity_distance(
@@ -120,11 +134,11 @@ def validate_tabulated_grid(
             f"{coordinate_name} and {values_name} must have the same length."
         )
 
-    if positive_values:
-        if np.any(values_arr <= 0.0):
-            raise ValueError(f"{values_name} must be positive.")
-    elif np.any(values_arr < 0.0):
-        raise ValueError(f"{values_name} must be non-negative.")
+    _validate_grid_values(
+        values_arr,
+        name=values_name,
+        positive=positive_values,
+    )
 
     return coordinate_arr, values_arr
 
@@ -152,11 +166,11 @@ def validate_binned_grid(
     if edges_arr.size != values_arr.size + 1:
         raise ValueError(f"{edges_name} must have one more value than {values_name}.")
 
-    if positive_values:
-        if np.any(values_arr <= 0.0):
-            raise ValueError(f"{values_name} must be positive.")
-    elif np.any(values_arr < 0.0):
-        raise ValueError(f"{values_name} must be non-negative.")
+    _validate_grid_values(
+        values_arr,
+        name=values_name,
+        positive=positive_values,
+    )
 
     return edges_arr, values_arr
 
@@ -194,11 +208,11 @@ def validate_2d_tabulated_grid(
             f"{values_name} must have shape ({y_name}.size, {x_name}.size)."
         )
 
-    if positive_values:
-        if np.any(values_arr <= 0.0):
-            raise ValueError(f"{values_name} must be positive.")
-    elif np.any(values_arr < 0.0):
-        raise ValueError(f"{values_name} must be non-negative.")
+    _validate_grid_values(
+        values_arr,
+        name=values_name,
+        positive=positive_values,
+    )
 
     return x_arr, y_arr, values_arr
 
@@ -237,10 +251,10 @@ def validate_2d_binned_grid(
             f"({y_edges_name}.size - 1, {x_edges_name}.size - 1)."
         )
 
-    if positive_values:
-        if np.any(values_arr <= 0.0):
-            raise ValueError(f"{values_name} must be positive.")
-    elif np.any(values_arr < 0.0):
-        raise ValueError(f"{values_name} must be non-negative.")
+    _validate_grid_values(
+        values_arr,
+        name=values_name,
+        positive=positive_values,
+    )
 
     return x_edges_arr, y_edges_arr, values_arr

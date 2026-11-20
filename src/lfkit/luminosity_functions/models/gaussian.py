@@ -7,7 +7,6 @@ import numpy as np
 from lfkit.utils.types import FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
     "gaussian_lf",
     "lognormal_lf",

@@ -34,12 +34,11 @@ from lfkit.utils.types import (
 )
 from lfkit.utils.validators import validate_array, validate_magnitude_range
 
-
 __all__ = [
     "absolute_magnitude_limit",
-    "observed_number_density",
-    "missing_number_density",
     "catalog_fraction",
+    "missing_number_density",
+    "observed_number_density",
     "out_of_catalog_fraction",
 ]
 

@@ -1,160 +1,67 @@
-"""Callable evaluation utilities."""
+"""Numerical parameter evaluation utilities."""
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from typing import Literal
 
 import numpy as np
 
-from lfkit.utils.types import FloatArray, LuminosityFunction
-
+from lfkit.utils.types import ConditionalParameter, FloatArray, FloatInput
+from lfkit.utils.validators import validate_array
 
 __all__ = [
-    "evaluate_non_negative_redshift_callable",
-    "evaluate_optional_redshift_callable",
-    "evaluate_positive_redshift_callable",
-    "evaluate_weight_on_grid",
-    "evaluate_lf_on_grid",
+    "evaluate_parameter",
 ]
 
 
-def evaluate_optional_redshift_callable(
-    fn: Callable[[FloatArray], FloatArray] | None,
-    z: FloatArray,
-    *,
-    name: str,
-) -> FloatArray | None:
-    """Evaluate an optional redshift-dependent callable.
+def evaluate_parameter(
+    parameter: ConditionalParameter,
+    *coordinates: FloatInput,
+    name: str = "parameter",
+    domain: Literal["real", "positive", "non_negative"] = "real",
+) -> FloatArray:
+    """Evaluate a numerical parameter or callable on broadcastable coordinates.
 
     Args:
-        fn: Callable to evaluate. If None, None is returned.
-        z: Redshift array passed to the callable.
-        name: Name used in error messages.
+        parameter: Numerical value or callable accepting the coordinates.
+        *coordinates: Independent variables passed to the callable.
+        name: Parameter name used in error messages.
+        domain: Allowed domain of the evaluated values.
 
     Returns:
-        Callable values with the same shape as ``z``, or None.
+        Finite float64 values broadcast to the common coordinate shape.
+        If no coordinates are supplied, the evaluated shape is preserved.
+
+    Raises:
+        ValueError: If the domain is unsupported, the values are non-finite,
+            the output shape is incompatible, or the domain is violated.
     """
-    if fn is None:
-        return None
+    if domain not in ("real", "positive", "non_negative"):
+        raise ValueError(f"Unsupported domain: {domain!r}.")
 
-    return _evaluate_redshift_callable(fn, z, name=name)
+    arrays = tuple(
+        validate_array(coordinate, name=f"coordinate {i}")
+        for i, coordinate in enumerate(coordinates)
+    )
 
+    values = parameter(*arrays) if callable(parameter) else parameter
+    values_arr = validate_array(values, name=name)
 
-def evaluate_positive_redshift_callable(
-    fn: Callable[[FloatArray], FloatArray],
-    z: FloatArray,
-    *,
-    name: str,
-) -> FloatArray:
-    """Evaluate a redshift-dependent callable that must be positive.
+    if arrays:
+        shape = np.broadcast_shapes(*(arr.shape for arr in arrays))
 
-    Args:
-        fn: Callable to evaluate.
-        z: Redshift array passed to the callable.
-        name: Name used in error messages.
+        if values_arr.shape != shape:
+            try:
+                values_arr = np.broadcast_to(values_arr, shape)
+            except ValueError as exc:
+                raise ValueError(
+                    f"{name} must return values broadcastable to shape {shape}."
+                ) from exc
 
-    Returns:
-        Positive callable values with the same shape as ``z``.
-    """
-    values = _evaluate_redshift_callable(fn, z, name=name)
+    if domain == "positive" and np.any(values_arr <= 0.0):
+        raise ValueError(f"{name} must be positive.")
 
-    if np.any(values <= 0.0):
-        raise ValueError(f"{name}(z) must return positive values.")
+    if domain == "non_negative" and np.any(values_arr < 0.0):
+        raise ValueError(f"{name} must be non-negative.")
 
-    return values
-
-
-def evaluate_non_negative_redshift_callable(
-    fn: Callable[[FloatArray], FloatArray],
-    z: FloatArray,
-    *,
-    name: str,
-) -> FloatArray:
-    """Evaluate a redshift-dependent callable that must be non-negative.
-
-    Args:
-        fn: Callable to evaluate.
-        z: Redshift array passed to the callable.
-        name: Name used in error messages.
-
-    Returns:
-        Non-negative callable values with the same shape as ``z``.
-    """
-    values = _evaluate_redshift_callable(fn, z, name=name)
-
-    if np.any(values < 0.0):
-        raise ValueError(f"{name}(z) must return non-negative values.")
-
-    return values
-
-
-def evaluate_weight_on_grid(
-    weight_fn: Callable[[FloatArray, FloatArray], FloatArray],
-    *,
-    m_grid: FloatArray,
-    z_grid: FloatArray,
-) -> FloatArray:
-    r"""Return finite non-negative weight values on a magnitude-redshift grid."""
-    weight = np.asarray(weight_fn(m_grid, z_grid), dtype=float)
-
-    if weight.shape != m_grid.shape:
-        try:
-            weight = np.broadcast_to(weight, m_grid.shape)
-        except ValueError as exc:
-            raise ValueError(
-                "weight_fn(M, z) must return values broadcastable to the shape "
-                "of the magnitude-redshift integration grid."
-            ) from exc
-
-    if np.any(~np.isfinite(weight)):
-        raise ValueError("weight_fn(M, z) returned non-finite values.")
-
-    if np.any(weight < 0.0):
-        raise ValueError("weight_fn(M, z) must be non-negative.")
-
-    return np.asarray(weight, dtype=float)
-
-
-def evaluate_lf_on_grid(
-    lf: LuminosityFunction,
-    *,
-    m_grid: FloatArray,
-    z_grid: FloatArray,
-) -> FloatArray:
-    r"""Return LF values evaluated on a magnitude-redshift grid."""
-    phi = np.asarray(lf(m_grid, z_grid), dtype=float)
-
-    if phi.shape != m_grid.shape:
-        try:
-            phi = np.broadcast_to(phi, m_grid.shape)
-        except ValueError as exc:
-            raise ValueError(
-                "lf(M, z) must return values broadcastable to the shape "
-                "of the magnitude-redshift integration grid."
-            ) from exc
-
-    if np.any(~np.isfinite(phi)):
-        raise ValueError("lf(M, z) returned non-finite values.")
-
-    if np.any(phi < 0.0):
-        raise ValueError("lf(M, z) must be non-negative.")
-
-    return np.asarray(phi, dtype=float)
-
-
-def _evaluate_redshift_callable(
-    fn: Callable[[FloatArray], FloatArray],
-    z: FloatArray,
-    *,
-    name: str,
-) -> FloatArray:
-    """Evaluate a redshift callable and validate shape and finite values."""
-    values = np.asarray(fn(z), dtype=float)
-
-    if values.shape != z.shape:
-        raise ValueError(f"{name}(z) must return an array with the same shape as z.")
-
-    if np.any(~np.isfinite(values)):
-        raise ValueError(f"{name}(z) returned non-finite values.")
-
-    return np.asarray(values, dtype=float)
+    return values_arr

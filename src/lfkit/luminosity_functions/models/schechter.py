@@ -16,11 +16,11 @@ Implemented models:
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import warnings
+from collections.abc import Mapping
 
 import numpy as np
-from scipy.special import gammaincc, gamma
+from scipy.special import gamma, gammaincc
 
 from lfkit.luminosity_functions.parameter_models import evaluate_lf_parameters
 from lfkit.photometry.luminosities import luminosity_ratio
@@ -28,19 +28,18 @@ from lfkit.photometry.magnitudes import absolute_magnitude
 from lfkit.utils.types import Cosmology, FloatArray, FloatInput, ParameterValue
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
-    "schechter",
-    "evolving_schechter",
     "double_schechter",
-    "schechter_from_m",
-    "evolving_schechter_from_m",
     "double_schechter_from_m",
+    "evolving_schechter",
+    "evolving_schechter_from_m",
+    "modified_schechter",
+    "multi_schechter",
+    "schechter",
     "schechter_cumulative",
     "schechter_cumulative_evolving",
-    "modified_schechter",
+    "schechter_from_m",
     "truncated_schechter",
-    "multi_schechter",
 ]
 
 

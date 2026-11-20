@@ -10,15 +10,14 @@ from __future__ import annotations
 from collections.abc import Callable
 
 import numpy as np
+from scipy.integrate import trapezoid
 
+from lfkit.utils.evaluators import evaluate_parameter
 from lfkit.utils.types import FloatArray, FloatInput
 from lfkit.utils.validators import validate_array
 
-
 __all__ = [
     "integrate_between_variable_bounds",
-    "safe_divide",
-    "safe_power10",
 ]
 
 
@@ -56,17 +55,8 @@ def integrate_between_variable_bounds(
 
     y_arr = validate_array(y, name=y_name)
 
-    lower_arr = np.asarray(lower, dtype=float)
-    upper_arr = np.asarray(upper, dtype=float)
-
-    if np.any(~np.isfinite(lower_arr)):
-        raise ValueError(_bound_finite_error_message(lower_name))
-
-    if np.any(~np.isfinite(upper_arr)):
-        raise ValueError(_bound_finite_error_message(upper_name))
-
-    lower_arr = validate_array(lower_arr, name=lower_name)
-    upper_arr = validate_array(upper_arr, name=upper_name)
+    lower_arr = validate_array(lower, name=lower_name)
+    upper_arr = validate_array(upper, name=upper_name)
 
     y_arr, lower_arr, upper_arr = np.broadcast_arrays(y_arr, lower_arr, upper_arr)
 
@@ -79,107 +69,12 @@ def integrate_between_variable_bounds(
     x_grid = lower_arr[None, ...] + t_grid.reshape(grid_shape) * width[None, ...]
     y_grid = np.broadcast_to(y_arr[None, ...], x_grid.shape)
 
-    values = np.asarray(integrand_fn(x_grid, y_grid), dtype=float)
+    values = evaluate_parameter(
+        integrand_fn,
+        x_grid,
+        y_grid,
+        name="integrand_fn",
+    )
 
-    try:
-        values = np.broadcast_to(values, x_grid.shape)
-    except ValueError as exc:
-        raise ValueError(
-            "integrand_fn(x, y) must return values broadcastable "
-            "to the integration grid shape"
-        ) from exc
-
-    if np.any(~np.isfinite(values)):
-        raise ValueError("integrand_fn(x, y) returned non-finite values")
-
-    result = np.trapezoid(values, x=x_grid, axis=0)
+    result = trapezoid(values, x=x_grid, axis=0)
     return np.where(empty, 0.0, result)
-
-
-def safe_divide(
-    numerator: FloatInput,
-    denominator: FloatInput,
-    *,
-    fill_value: float = 0.0,
-) -> FloatArray:
-    """Divide arrays safely, replacing invalid or zero-denominator results.
-
-    Args:
-        numerator: Values in the numerator.
-        denominator: Values in the denominator.
-        fill_value: Value returned where the denominator is zero or where
-            the division would produce a non-finite result.
-
-    Returns:
-        Broadcasted division result with invalid entries replaced by
-        ``fill_value``.
-    """
-    numerator_arr, denominator_arr = np.broadcast_arrays(
-        np.asarray(numerator, dtype=float),
-        np.asarray(denominator, dtype=float),
-    )
-
-    result = np.full(numerator_arr.shape, fill_value, dtype=float)
-
-    valid = denominator_arr > 0.0
-    np.divide(
-        numerator_arr,
-        denominator_arr,
-        out=result,
-        where=valid,
-    )
-
-    result = np.where(np.isfinite(result), result, fill_value)
-    return result
-
-
-def _variable_bounds_grid(
-    *,
-    lower: FloatArray,
-    upper: FloatArray,
-    n_grid: int,
-) -> FloatArray:
-    """Return a column-wise grid between variable lower and upper bounds."""
-    t = np.linspace(0.0, 1.0, int(n_grid), dtype=float)
-
-    return np.asarray(
-        lower[None, :] + t[:, None] * (upper[None, :] - lower[None, :]),
-        dtype=float,
-    )
-
-
-def _validate_variable_bound_inputs(
-    *,
-    lower: FloatArray,
-    upper: FloatArray,
-    n_grid: int,
-) -> None:
-    """Validate finite variable-bound integration inputs."""
-    if np.any(~np.isfinite(lower)):
-        raise ValueError("lower must contain only finite values.")
-
-    if np.any(~np.isfinite(upper)):
-        raise ValueError("upper must contain only finite values.")
-
-    if n_grid < 2:
-        raise ValueError("n_grid must be at least 2.")
-
-
-def _bound_finite_error_message(name: str) -> str:
-    """Return the finite-bound validation message for a named bound."""
-    if name in {"lower", "upper"}:
-        return f"{name} must contain only finite values."
-
-    return f"{name} contains NaN or infinite values."
-
-
-def safe_power10(
-    exponent: FloatInput,
-    *,
-    min_exponent: float = -300.0,
-    max_exponent: float = 300.0,
-) -> FloatArray:
-    """Return clipped base-10 powers without overflow warnings."""
-    exponent_arr = validate_array(exponent, name="exponent")
-    clipped = np.clip(exponent_arr, min_exponent, max_exponent)
-    return np.asarray(10.0**clipped, dtype=float)

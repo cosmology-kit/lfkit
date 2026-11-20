@@ -10,11 +10,11 @@ lfkit.utils
    :toctree:
    :recursive:
 
-   download_poggianti97_data
    evaluators
    integrators
    interpolation
    io
+   numerics
    types
    units
    validators

@@ -37,7 +37,7 @@ from pathlib import Path
 
 import numpy as np
 
-from lfkit.utils.units import mag_to_maggies
+from lfkit.photometry.fluxes import mag_to_maggies
 
 from .kcorrect_backend import build_kcorrect
 

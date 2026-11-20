@@ -89,7 +89,9 @@ def test_build_1d_interpolator_native_extrap_produces_finite_outside(method):
     """Tests that build_1d_interpolator with extrap_mode='native' returns finite values outside the tabulated range."""
     z = np.array([0.0, 1.0, 2.0, 3.0])
     y = np.array([0.0, 1.0, 0.0, 1.0])
-    f = build_1d_interpolator(z, y, method=method, extrapolate=True, extrap_mode="native")
+    f = build_1d_interpolator(
+        z, y, method=method, extrapolate=True, extrap_mode="native"
+    )
     xx = np.array([-0.5, 0.5, 3.5])
     out = np.asarray(f(xx), float)
     assert out.shape == xx.shape
@@ -101,7 +103,9 @@ def test_build_1d_interpolator_linear_tail_matches_endpoint_slopes(method):
     """Tests that build_1d_interpolator with extrap_mode='linear_tail' extrapolates using endpoint slopes."""
     z = np.array([0.0, 1.0, 2.0])
     y = np.array([10.0, 12.0, 20.0])
-    f = build_1d_interpolator(z, y, method=method, extrapolate=True, extrap_mode="linear_tail")
+    f = build_1d_interpolator(
+        z, y, method=method, extrapolate=True, extrap_mode="linear_tail"
+    )
 
     left_x = np.array([-1.0])
     right_x = np.array([3.0])
@@ -129,12 +133,14 @@ def test_build_1d_interpolator_raises_on_unknown_extrap_mode():
     z = np.array([0.0, 1.0])
     y = np.array([0.0, 1.0])
     with pytest.raises(ValueError):
-        build_1d_interpolator(z, y, method="linear", extrapolate=True, extrap_mode="nope")  # type: ignore[arg-type]
+        build_1d_interpolator(
+            z, y, method="linear", extrapolate=True, extrap_mode="nope"
+        )  # type: ignore[arg-type]
 
 
 def test_interpolation_exports_expected_public_names() -> None:
     """Tests that interpolation exposes the expected public API names."""
-    import lfkit.utils.interpolation as interpolation
+    from lfkit.utils import interpolation
 
     expected = {
         "linear_interp_extrap",
@@ -358,3 +364,110 @@ def test_as_1d_finite_grid_rejects_infinite_values() -> None:
     """Tests that as_1d_finite_grid rejects infinite values."""
     with pytest.raises(ValueError, match="z must be a finite 1D array"):
         as_1d_finite_grid([0.0, np.inf, 1.0], name="z")
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [(-1.0, 8.0), (0.5, 11.0), (4.0, 24.0)],
+)
+def test_linear_interp_extrap_scalar_queries(query, expected) -> None:
+    """Tests scalar interpolation and extrapolation."""
+    result = linear_interp_extrap(
+        query,
+        [0.0, 1.0, 3.0],
+        [10.0, 12.0, 20.0],
+    )
+
+    assert result.shape == ()
+    assert result == pytest.approx(expected)
+
+
+@pytest.mark.parametrize("method", ["linear", "pchip", "akima"])
+@pytest.mark.parametrize("mode", ["native", "linear_tail"])
+def test_build_1d_interpolator_scalar_extrapolation(method, mode) -> None:
+    """Tests scalar extrapolation for every method."""
+    f = build_1d_interpolator(
+        [0.0, 1.0, 2.0, 3.0],
+        [0.0, 2.0, 4.0, 6.0],
+        method=method,
+        extrapolate=True,
+        extrap_mode=mode,
+    )
+
+    assert f(-1.0) == pytest.approx(-2.0)
+    assert f(4.0) == pytest.approx(8.0)
+
+
+@pytest.mark.parametrize("method", ["linear", "pchip", "akima"])
+def test_build_1d_interpolator_multidimensional_queries(method) -> None:
+    """Tests preservation of multidimensional query shapes."""
+    f = build_1d_interpolator(
+        [0.0, 1.0, 2.0, 3.0],
+        [0.0, 2.0, 4.0, 6.0],
+        method=method,
+        extrapolate=True,
+        extrap_mode="linear_tail",
+    )
+
+    x = np.array([[-1.0, 0.5], [2.5, 4.0]])
+
+    result = f(x)
+
+    assert result.shape == x.shape
+    np.testing.assert_allclose(result, 2.0 * x)
+
+
+@pytest.mark.parametrize(
+    ("z", "y"),
+    [
+        ([0.0, 1.0], [1.0]),
+        ([[0.0, 1.0]], [[1.0, 2.0]]),
+        (0.0, 1.0),
+    ],
+)
+def test_prep_strictly_increasing_xy_rejects_invalid_shapes(z, y) -> None:
+    """Tests rejection of mismatched and non-one-dimensional samples."""
+    with pytest.raises(ValueError, match="matching 1D arrays"):
+        prep_strictly_increasing_xy(z, y)
+
+
+def test_prep_strictly_increasing_xy_retains_first_valid_duplicate() -> None:
+    """Tests deterministic duplicate handling."""
+    z = np.ones(100)
+    y = np.arange(100, dtype=float)
+
+    z = np.concatenate(([0.0], z, [2.0]))
+    y = np.concatenate(([-1.0], y, [100.0]))
+
+    z_out, y_out = prep_strictly_increasing_xy(z, y)
+
+    np.testing.assert_allclose(z_out, [0.0, 1.0, 2.0])
+    np.testing.assert_allclose(y_out, [-1.0, 0.0, 100.0])
+
+
+@pytest.mark.parametrize(
+    "xp",
+    [
+        [0.0, 0.0],
+        [1.0, 0.0],
+        [0.0, np.nan],
+        [0.0, np.inf],
+    ],
+)
+def test_linear_interp_extrap_rejects_invalid_sample_locations(xp) -> None:
+    """Tests rejection of invalid interpolation coordinates."""
+    with pytest.raises(ValueError):
+        linear_interp_extrap(0.5, xp, [1.0, 2.0])
+
+
+@pytest.mark.parametrize("method", ["pchip", "akima"])
+def test_build_1d_interpolator_no_extrap_returns_nan_outside(method) -> None:
+    """Tests existing nonlinear interpolation boundary behaviour."""
+    f = build_1d_interpolator(
+        [0.0, 1.0, 2.0, 3.0],
+        [0.0, 2.0, 4.0, 6.0],
+        method=method,
+        extrapolate=False,
+    )
+
+    assert np.all(np.isnan(f([-1.0, 4.0])))
