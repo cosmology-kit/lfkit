@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 
 from lfkit.corrections.poggianti1997 import (
-    _build_tlb_to_z_grid,
     available_pairs,
     describe_poggianti1997_available,
     load_poggianti1997_tables,
@@ -15,7 +14,6 @@ from lfkit.corrections.poggianti1997 import (
     poggianti1997_lookback_time_gyr,
     poggianti1997_time_since_bb_gyr,
     poggianti1997_to_accelerating_redshift,
-    z_from_lookback_time,
 )
 
 
@@ -117,86 +115,6 @@ def test_poggianti1997_lookback_time_gyr_is_zero_at_z0() -> None:
     """Tests that poggianti1997_lookback_time_gyr returns zero at z=0."""
     tlb0 = poggianti1997_lookback_time_gyr(0.0)
     assert np.allclose(tlb0, 0.0)
-
-
-def test_build_tlb_to_z_grid_rejects_bad_params() -> None:
-    """Tests that _build_tlb_to_z_grid raises ValueError for invalid zmax or nz."""
-
-    class _Cosmo:
-        pass
-
-    with pytest.raises(ValueError):
-        _build_tlb_to_z_grid(_Cosmo(), zmax=0.0, nz=4096)
-    with pytest.raises(ValueError):
-        _build_tlb_to_z_grid(_Cosmo(), zmax=1.0, nz=16)
-
-
-def test_build_tlb_to_z_grid_returns_strictly_increasing_t() -> None:
-    """Tests that _build_tlb_to_z_grid returns a strictly increasing lookback-time grid."""
-    # Patch lookback_time_gyr locally through the module under test.
-    import lfkit.corrections.poggianti1997 as mod
-
-    def _fake_lookback(_cosmo, z):
-        # strictly increasing function of z
-        z = np.asarray(z, float)
-        return 2.0 * z + 0.1
-
-    class _Cosmo:
-        pass
-
-    orig = mod.lookback_time_gyr
-    mod.lookback_time_gyr = _fake_lookback
-    try:
-        t, z = _build_tlb_to_z_grid(_Cosmo(), zmax=2.0, nz=64)
-    finally:
-        mod.lookback_time_gyr = orig
-
-    assert t.ndim == 1 and z.ndim == 1
-    assert t.size == z.size
-    assert np.all(t[1:] > t[:-1])
-
-
-def test_z_from_lookback_time_raises_outside_range() -> None:
-    """Tests that z_from_lookback_time raises ValueError when t_lb is outside the inversion grid."""
-    import lfkit.corrections.poggianti1997 as mod
-
-    def _fake_lookback(_cosmo, z):
-        z = np.asarray(z, float)
-        return z  # t in [0, zmax]
-
-    class _Cosmo:
-        pass
-
-    orig = mod.lookback_time_gyr
-    mod.lookback_time_gyr = _fake_lookback
-    try:
-        with pytest.raises(ValueError):
-            z_from_lookback_time(_Cosmo(), np.array([-1.0]), zmax=2.0, nz=128)
-        with pytest.raises(ValueError):
-            z_from_lookback_time(_Cosmo(), np.array([10.0]), zmax=2.0, nz=128)
-    finally:
-        mod.lookback_time_gyr = orig
-
-
-def test_z_from_lookback_time_inverts_monotone_mapping() -> None:
-    """Tests that z_from_lookback_time approximately inverts a monotone lookback-time mapping."""
-    import lfkit.corrections.poggianti1997 as mod
-
-    def _fake_lookback(_cosmo, z):
-        z = np.asarray(z, float)
-        return 3.0 * z  # invertible scaling
-
-    class _Cosmo:
-        pass
-
-    orig = mod.lookback_time_gyr
-    mod.lookback_time_gyr = _fake_lookback
-    try:
-        t = np.array([0.0, 0.6, 3.0], float)
-        z = z_from_lookback_time(_Cosmo(), t, zmax=2.0, nz=512)
-        assert np.allclose(z, t / 3.0, atol=1e-2)
-    finally:
-        mod.lookback_time_gyr = orig
 
 
 def test_poggianti1997_to_accelerating_redshift_calls_inversion(
@@ -312,3 +230,26 @@ def test_make_ecorr_interpolator_remaps_when_original_z_false(
     )
     assert callable(E)
     assert np.isfinite(float(E(0.25)))
+
+
+def test_poggianti1997_remapping_preserves_lookback_time(cosmology):
+    """Tests that Poggianti redshift remapping preserves physical lookback time."""
+    from lfkit.cosmology.times import lookback_time_gyr
+
+    z_original = np.array([0.0, 0.1, 0.3, 0.5, 1.0])
+
+    z_mapped = poggianti1997_to_accelerating_redshift(
+        z_original,
+        cosmo_obj=cosmology,
+    )
+
+    np.testing.assert_allclose(
+        lookback_time_gyr(cosmology, z_mapped),
+        poggianti1997_lookback_time_gyr(z_original),
+        rtol=1e-5,
+        atol=1e-4,
+    )
+
+    assert z_mapped.shape == z_original.shape
+    assert z_mapped[0] == 0.0
+    assert np.all(np.diff(z_mapped) > 0.0)
