@@ -5,7 +5,6 @@ import pytest
 
 from lfkit.utils.validators import (
     validate_array,
-    validate_luminosity_distance,
     validate_magnitude_range,
     validate_2d_binned_grid,
     validate_2d_tabulated_grid,
@@ -116,79 +115,6 @@ def test_validate_magnitude_range_rejects_reversed_bounds() -> None:
         validate_magnitude_range(m_bright=-18.0, m_faint=-24.0)
 
 
-def test_validate_luminosity_distance_accepts_scalar() -> None:
-    """Tests that a finite positive scalar distance is accepted."""
-    result = validate_luminosity_distance(100.0)
-
-    assert isinstance(result, np.ndarray)
-    assert result.dtype == np.float64
-    assert result.shape == ()
-    assert result == pytest.approx(100.0)
-
-
-def test_validate_luminosity_distance_accepts_list() -> None:
-    """Tests that finite positive distance values are accepted."""
-    result = validate_luminosity_distance([10.0, 100.0, 1000.0])
-
-    np.testing.assert_allclose(result, np.array([10.0, 100.0, 1000.0]))
-    assert result.dtype == np.float64
-
-
-def test_validate_luminosity_distance_accepts_numpy_array() -> None:
-    """Tests that a finite positive numpy array is accepted."""
-    distance = np.array([10, 100, 1000])
-
-    result = validate_luminosity_distance(distance)
-
-    np.testing.assert_allclose(result, np.array([10.0, 100.0, 1000.0]))
-    assert result.dtype == np.float64
-
-
-def test_validate_luminosity_distance_rejects_zero() -> None:
-    """Tests that zero luminosity distance is rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc must contain positive values",
-    ):
-        validate_luminosity_distance([0.0, 10.0])
-
-
-def test_validate_luminosity_distance_rejects_negative_values() -> None:
-    """Tests that negative luminosity distances are rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc contains negative values",
-    ):
-        validate_luminosity_distance([-1.0, 10.0])
-
-
-def test_validate_luminosity_distance_rejects_nan() -> None:
-    """Tests that NaN luminosity distances are rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc contains NaN or infinite values",
-    ):
-        validate_luminosity_distance([10.0, np.nan])
-
-
-def test_validate_luminosity_distance_rejects_positive_infinity() -> None:
-    """Tests that infinite luminosity distances are rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc contains NaN or infinite values",
-    ):
-        validate_luminosity_distance([10.0, np.inf])
-
-
-def test_validate_luminosity_distance_rejects_negative_infinity() -> None:
-    """Tests that negative infinite luminosity distances are rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc contains NaN or infinite values",
-    ):
-        validate_luminosity_distance([10.0, -np.inf])
-
-
 def test_validate_array_preserves_multidimensional_shape() -> None:
     """Tests that validate_array preserves multidimensional input shape."""
     x = np.array([[1.0, 2.0], [3.0, 4.0]])
@@ -229,34 +155,6 @@ def test_validate_array_rejects_negative_scalar_when_disallowed() -> None:
     """Tests that a negative scalar is rejected when negatives are disallowed."""
     with pytest.raises(ValueError, match="x contains negative values"):
         validate_array(-1.0, name="x", allow_negative=False)
-
-
-def test_validate_luminosity_distance_preserves_multidimensional_shape() -> None:
-    """Tests that luminosity-distance validation preserves multidimensional shape."""
-    distance = np.array([[10.0, 100.0], [1000.0, 2000.0]])
-
-    result = validate_luminosity_distance(distance)
-
-    assert result.shape == distance.shape
-    np.testing.assert_allclose(result, distance)
-
-
-def test_validate_luminosity_distance_rejects_zero_scalar() -> None:
-    """Tests that scalar zero luminosity distance is rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc must contain positive values",
-    ):
-        validate_luminosity_distance(0.0)
-
-
-def test_validate_luminosity_distance_rejects_negative_scalar() -> None:
-    """Tests that scalar negative luminosity distance is rejected."""
-    with pytest.raises(
-        ValueError,
-        match="luminosity_distance_mpc contains negative values",
-    ):
-        validate_luminosity_distance(-1.0)
 
 
 def test_validate_magnitude_range_accepts_zero_width_sign_crossing_range() -> None:
@@ -314,10 +212,14 @@ def test_validate_strictly_increasing_1d_rejects_decreasing_values() -> None:
         validate_strictly_increasing_1d([0.0, 2.0, 1.0], name="z")
 
 
-def test_validate_strictly_increasing_1d_rejects_negative_values_when_disallowed() -> None:
+def test_validate_strictly_increasing_1d_rejects_negative_values_when_disallowed() -> (
+    None
+):
     """Tests that negative grid values are rejected when requested."""
     with pytest.raises(ValueError, match="z contains negative values"):
-        validate_strictly_increasing_1d([-1.0, 0.0, 1.0], name="z", allow_negative=False)
+        validate_strictly_increasing_1d(
+            [-1.0, 0.0, 1.0], name="z", allow_negative=False
+        )
 
 
 def test_validate_tabulated_grid_accepts_valid_nonnegative_values() -> None:
@@ -521,7 +423,9 @@ def test_validate_2d_tabulated_grid_rejects_negative_values_by_default() -> None
         )
 
 
-def test_validate_2d_tabulated_grid_rejects_zero_when_positive_values_required() -> None:
+def test_validate_2d_tabulated_grid_rejects_zero_when_positive_values_required() -> (
+    None
+):
     """Tests that zero tabulated 2D values are rejected when positivity is required."""
     with pytest.raises(ValueError, match="phi must be positive"):
         validate_2d_tabulated_grid(

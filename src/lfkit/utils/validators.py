@@ -11,7 +11,6 @@ __all__ = [
     "validate_2d_tabulated_grid",
     "validate_array",
     "validate_binned_grid",
-    "validate_luminosity_distance",
     "validate_magnitude_range",
     "validate_strictly_increasing_1d",
     "validate_tabulated_grid",
@@ -48,22 +47,6 @@ def _validate_grid_values(
             raise ValueError(f"{name} must be positive.")
     elif np.any(values < 0.0):
         raise ValueError(f"{name} must be non-negative.")
-
-
-def validate_luminosity_distance(
-    luminosity_distance_mpc: FloatInput,
-) -> FloatArray:
-    """Return finite positive luminosity distances in Mpc."""
-    distance = validate_array(
-        luminosity_distance_mpc,
-        name="luminosity_distance_mpc",
-        allow_negative=False,
-    )
-
-    if np.any(distance <= 0.0):
-        raise ValueError("luminosity_distance_mpc must contain positive values.")
-
-    return distance
 
 
 def validate_magnitude_range(

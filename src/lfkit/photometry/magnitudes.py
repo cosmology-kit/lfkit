@@ -19,11 +19,10 @@ from __future__ import annotations
 import numpy as np
 
 from lfkit.cosmology.distances import (
-    distance_modulus,
     distance_modulus_from_luminosity_distance,
+    luminosity_distance_mpc,
 )
 from lfkit.utils.types import Cosmology, FloatArray, FloatInput
-from lfkit.utils.validators import validate_luminosity_distance
 
 __all__ = [
     "absolute_magnitude",
@@ -47,7 +46,7 @@ def total_magnitude_correction(
     k_correction: FloatInput | None = None,
     e_correction: FloatInput | None = None,
 ) -> FloatArray:
-    """Return the net correction added to apparent absolute conversion.
+    """Return the net photometric correction K - E.
 
     This combines optional k-correction and evolution-correction terms as
 
@@ -100,16 +99,16 @@ def absolute_magnitude(
         e_correction: Optional evolution-correction term(s).
 
     Returns:
-        NumPy array of absolute magnitudes.
+        NumPy array of absolute magnitudes. Zero luminosity distance
+        returns positive infinity for finite magnitudes and corrections.
     """
-    m = np.asarray(apparent_mag, dtype=float)
-    mu = distance_modulus(cosmo_obj, z, h=h)
-    correction = total_magnitude_correction(
+    return absolute_magnitude_from_luminosity_distance(
+        apparent_mag,
+        luminosity_distance_mpc(cosmo_obj, z),
+        h=h,
         k_correction=k_correction,
         e_correction=e_correction,
     )
-
-    return np.asarray(m - mu - correction, dtype=np.float64)
 
 
 def apparent_magnitude(
@@ -137,22 +136,23 @@ def apparent_magnitude(
         e_correction: Optional evolution-correction term(s).
 
     Returns:
-        NumPy array of apparent magnitudes.
+        NumPy array of apparent magnitudes. Zero luminosity distance
+        returns negative infinity for finite magnitudes and corrections.
     """
-    M = np.asarray(absolute_mag, dtype=float)
-    mu = distance_modulus(cosmo_obj, z, h=h)
-    correction = total_magnitude_correction(
+    return apparent_magnitude_from_luminosity_distance(
+        absolute_mag,
+        luminosity_distance_mpc(cosmo_obj, z),
+        h=h,
         k_correction=k_correction,
         e_correction=e_correction,
     )
-
-    return np.asarray(M + mu + correction, dtype=np.float64)
 
 
 def absolute_magnitude_from_luminosity_distance(
     apparent_mag: FloatInput,
     luminosity_distance_mpc: FloatInput,
     *,
+    h: float | None = None,
     k_correction: FloatInput | None = None,
     e_correction: FloatInput | None = None,
 ) -> FloatArray:
@@ -166,19 +166,27 @@ def absolute_magnitude_from_luminosity_distance(
 
     ``mu = 5 log10(d_L / Mpc) + 25``.
 
+    If ``h`` is provided, the distance is rescaled by ``h`` before computing
+    the distance modulus.
+
     Args:
         apparent_mag: Apparent magnitude value(s).
-        luminosity_distance_mpc: Luminosity distance value(s) in Mpc.
+        luminosity_distance_mpc: Non-negative luminosity distance value(s)
+            in Mpc.
+        h: Optional dimensionless Hubble parameter used to rescale the
+            luminosity distance.
         k_correction: Optional k-correction term(s).
         e_correction: Optional evolution-correction term(s).
 
     Returns:
-        NumPy array of absolute magnitudes.
+        NumPy array of absolute magnitudes. Zero luminosity distance
+        returns positive infinity for finite magnitudes and corrections.
     """
     m = np.asarray(apparent_mag, dtype=float)
-    d_l = validate_luminosity_distance(luminosity_distance_mpc)
-
-    mu = distance_modulus_from_luminosity_distance(d_l)
+    mu = distance_modulus_from_luminosity_distance(
+        luminosity_distance_mpc,
+        h=h,
+    )
     correction = total_magnitude_correction(
         k_correction=k_correction,
         e_correction=e_correction,
@@ -191,6 +199,7 @@ def apparent_magnitude_from_luminosity_distance(
     absolute_mag: FloatInput,
     luminosity_distance_mpc: FloatInput,
     *,
+    h: float | None = None,
     k_correction: FloatInput | None = None,
     e_correction: FloatInput | None = None,
 ) -> FloatArray:
@@ -204,19 +213,27 @@ def apparent_magnitude_from_luminosity_distance(
 
     ``mu = 5 log10(d_L / Mpc) + 25``.
 
+    If ``h`` is provided, the distance is rescaled by ``h`` before computing
+    the distance modulus.
+
     Args:
         absolute_mag: Absolute magnitude value(s).
-        luminosity_distance_mpc: Luminosity distance value(s) in Mpc.
+        luminosity_distance_mpc: Non-negative luminosity distance value(s)
+            in Mpc.
+        h: Optional dimensionless Hubble parameter used to rescale the
+            luminosity distance.
         k_correction: Optional k-correction term(s).
         e_correction: Optional evolution-correction term(s).
 
     Returns:
-        NumPy array of apparent magnitudes.
+        NumPy array of apparent magnitudes. Zero luminosity distance
+        returns negative infinity for finite magnitudes and corrections.
     """
     M = np.asarray(absolute_mag, dtype=float)
-    d_l = validate_luminosity_distance(luminosity_distance_mpc)
-
-    mu = distance_modulus_from_luminosity_distance(d_l)
+    mu = distance_modulus_from_luminosity_distance(
+        luminosity_distance_mpc,
+        h=h,
+    )
     correction = total_magnitude_correction(
         k_correction=k_correction,
         e_correction=e_correction,
