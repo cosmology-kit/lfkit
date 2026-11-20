@@ -180,3 +180,21 @@ def test_invalid_redshift(function, z):
 
     with pytest.raises(ValueError):
         function(cosmology, z)
+
+
+@pytest.mark.parametrize(
+    "cosmo_obj",
+    [
+        object(),
+        {},
+        {"h": None},
+        {"h": "invalid"},
+    ],
+)
+def test_dimensionless_hubble_parameter_rejects_unreadable_h(cosmo_obj):
+    """Tests that unreadable cosmological Hubble parameters raise ValueError."""
+    with pytest.raises(
+        ValueError,
+        match="Could not read h from the cosmology object",
+    ):
+        dimensionless_hubble_parameter(cosmo_obj)

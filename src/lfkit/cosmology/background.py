@@ -31,10 +31,13 @@ def dimensionless_hubble_parameter(
     Returns:
         Dimensionless Hubble parameter.
     """
-    if isinstance(cosmo_obj, FLRW):
-        h = float(cosmo_obj.h)
-    else:
-        h = float(cosmo_obj["h"])
+    try:
+        if isinstance(cosmo_obj, FLRW):
+            h = float(cosmo_obj.h)
+        else:
+            h = float(cosmo_obj["h"])
+    except (KeyError, TypeError, AttributeError, ValueError) as exc:
+        raise ValueError("Could not read h from the cosmology object.") from exc
 
     if not np.isfinite(h) or h <= 0.0:
         raise ValueError("h must be finite and positive.")

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from lfkit.cosmology.background import dimensionless_hubble_parameter
 from lfkit.luminosity_functions.integrals import (
     integrated_number_density as _integrated_number_density,
 )
@@ -62,12 +63,12 @@ def absolute_magnitude_limit(
         M_{\mathrm{lim}}(z) = m_{\mathrm{lim}} - \mu(z) - K(z) + E(z).
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         m_lim: Apparent magnitude limit of the catalog.
         h: Optional dimensionless Hubble parameter used in the
             distance-modulus convention. If not provided, this is read from
-            ``cosmo_obj["h"]``.
+            the cosmology object.
         k_correction: Optional k-correction term(s).
         e_correction: Optional evolution-correction term(s).
 
@@ -82,7 +83,10 @@ def absolute_magnitude_limit(
     if not np.isfinite(m_lim):
         raise ValueError("m_lim must be finite.")
 
-    h_resolved = _resolve_h(cosmo_obj, h)
+    h_resolved = dimensionless_hubble_parameter(cosmo_obj) if h is None else h
+
+    if not np.isfinite(h_resolved) or h_resolved <= 0.0:
+        raise ValueError("h must be finite and positive.")
 
     return absolute_magnitude(
         cosmo_obj,
@@ -119,7 +123,7 @@ def observed_number_density(
         \phi(M, z) \, dM.
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         lf: Luminosity-function callable with signature ``lf(M, z)``.
         m_lim: Apparent magnitude limit of the catalog.
@@ -182,7 +186,7 @@ def missing_number_density(
         \phi(M, z) \, dM.
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         lf: Luminosity-function callable with signature ``lf(M, z)``.
         m_lim: Apparent magnitude limit of the catalog.
@@ -244,7 +248,7 @@ def catalog_fraction(
              {n_{\mathrm{obs}}(z) + n_{\mathrm{miss}}(z)}.
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         lf: Luminosity-function callable with signature ``lf(M, z)``.
         m_lim: Apparent magnitude limit of the catalog.
@@ -310,7 +314,7 @@ def out_of_catalog_fraction(
         f_{\mathrm{miss}}(z) = 1 - f_{\mathrm{obs}}(z).
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         lf: Luminosity-function callable with signature ``lf(M, z)``.
         m_lim: Apparent magnitude limit of the catalog.
@@ -339,29 +343,6 @@ def out_of_catalog_fraction(
     )
 
     return np.asarray(1.0 - completeness, dtype=float)
-
-
-def _resolve_h(
-    cosmo_obj: Cosmology,
-    h: float | None,
-) -> float:
-    """Return explicit h or read it from a PyCCL-style cosmology object."""
-    if h is not None:
-        if not np.isfinite(h):
-            raise ValueError("h must be finite.")
-        return float(h)
-
-    try:
-        h_from_cosmo = cosmo_obj["h"]
-    except (KeyError, TypeError, AttributeError) as exc:
-        raise ValueError(
-            "h was not provided and could not be read from cosmo_obj['h']."
-        ) from exc
-
-    if not np.isfinite(h_from_cosmo):
-        raise ValueError("cosmo_obj['h'] must be finite.")
-
-    return float(h_from_cosmo)
 
 
 def _fraction(

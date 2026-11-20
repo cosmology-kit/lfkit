@@ -18,7 +18,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from lfkit.cosmo.cosmology import distance_modulus
+from lfkit.cosmology.distances import (
+    distance_modulus,
+    distance_modulus_from_luminosity_distance,
+)
 from lfkit.utils.types import Cosmology, FloatArray, FloatInput
 from lfkit.utils.validators import validate_luminosity_distance
 
@@ -175,7 +178,7 @@ def absolute_magnitude_from_luminosity_distance(
     m = np.asarray(apparent_mag, dtype=float)
     d_l = validate_luminosity_distance(luminosity_distance_mpc)
 
-    mu = 5.0 * np.log10(d_l) + 25.0
+    mu = distance_modulus_from_luminosity_distance(d_l)
     correction = total_magnitude_correction(
         k_correction=k_correction,
         e_correction=e_correction,
@@ -213,7 +216,7 @@ def apparent_magnitude_from_luminosity_distance(
     M = np.asarray(absolute_mag, dtype=float)
     d_l = validate_luminosity_distance(luminosity_distance_mpc)
 
-    mu = 5.0 * np.log10(d_l) + 25.0
+    mu = distance_modulus_from_luminosity_distance(d_l)
     correction = total_magnitude_correction(
         k_correction=k_correction,
         e_correction=e_correction,
