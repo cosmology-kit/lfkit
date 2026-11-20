@@ -25,7 +25,7 @@ extended or overridden to support custom filter curves.
 
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 KNOWN_FILTERSETS: tuple[str, ...] = (
     "sdss",
@@ -120,7 +120,7 @@ def resolve_response_name(
     if key in m:
         return str(m[key])
 
-    available_for_fs = sorted([bb for (ffs, bb) in m.keys() if ffs == fs])
+    available_for_fs = sorted(bb for ffs, bb in m if ffs == fs)
     if available_for_fs:
         raise ValueError(
             f"No response mapping for (filterset, band)=({fs!r}, {b!r}). "
@@ -128,7 +128,7 @@ def resolve_response_name(
             "Provide response_map=... to extend the mapping."
         )
 
-    known_filtersets = sorted(set(ffs for (ffs, _) in m.keys()))
+    known_filtersets = sorted({ffs for ffs, _ in m})
     raise ValueError(
         f"No response mapping for filterset={fs!r}. "
         f"Known filtersets in mapping: {known_filtersets}. "
@@ -147,10 +147,10 @@ def list_supported(
     """
     m = DEFAULT_RESPONSE_MAP if response_map is None else response_map
     out: dict[str, list[str]] = {}
-    for (fs, band), _resp in m.items():
+    for fs, band in m:
         out.setdefault(fs, []).append(band)
-    for fs in out:
-        out[fs] = sorted(set(out[fs]))
+    for fs, bands in out.items():
+        out[fs] = sorted(set(bands))
     return dict(sorted(out.items()))
 
 
@@ -177,7 +177,7 @@ def validate_coverage(
             missing.append(str(b))
 
     if missing:
-        supported = sorted([bb for (ffs, bb) in m.keys() if ffs == fs])
+        supported = sorted(bb for ffs, bb in m if ffs == fs)
         raise ValueError(
             f"Missing response mappings for filterset={fs!r}: {missing}. "
             f"Supported bands: {supported}. "

@@ -9,11 +9,14 @@ This module handles:
 from __future__ import annotations
 
 import inspect
+import logging
+from collections.abc import Iterable
 from functools import lru_cache
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=8)
@@ -46,12 +49,12 @@ def discover_response_dir_auto() -> Path:
                 p = Path(getattr(kc, attr))
                 if p.exists():
                     return p
-    except Exception:
-        pass
+    except (ImportError, OSError, AttributeError, TypeError, ValueError) as exc:
+        logger.debug("Response directory probe failed: %s", exc)
 
     try:
         import kcorrect as _kcorrect_pkg  # type: ignore
-    except Exception as e:
+    except ImportError as e:
         raise FileNotFoundError(
             "Could not import kcorrect to discover response directory automatically."
         ) from e
@@ -118,7 +121,7 @@ def require_responses(
     avail = set(_cached_available_responses(key))
     missing = [str(r) for r in responses if str(r) not in avail]
     if missing:
-        example = sorted(list(avail))[:25]
+        example = sorted(avail)[:25]
         raise ValueError(
             f"Missing kcorrect responses: {missing}. Example available: {example} ..."
         )
@@ -131,7 +134,7 @@ def kcorrect_supports_response_dir() -> bool:
 
         sig = inspect.signature(kk.Kcorrect)
         return "response_dir" in sig.parameters
-    except Exception:
+    except (ImportError, AttributeError, TypeError, ValueError):
         return False
 
 

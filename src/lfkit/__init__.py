@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from lfkit.api.conditional_luminosity_function import ConditionalLuminosityFunction
 from lfkit.api.corrections import Corrections
 from lfkit.api.luminosity_function import LuminosityFunction
-from lfkit.api.conditional_luminosity_function import ConditionalLuminosityFunction
 
 try:
     from lfkit._version import version as __version__
@@ -13,9 +13,9 @@ except ImportError:
 
 
 __all__ = [
+    "ConditionalLuminosityFunction",
     "Corrections",
     "LuminosityFunction",
-    "ConditionalLuminosityFunction",
 ]
 
 __author__ = """Niko Sarcevic and collaborators."""

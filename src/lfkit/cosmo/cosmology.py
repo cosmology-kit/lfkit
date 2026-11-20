@@ -14,8 +14,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-from numpy.typing import ArrayLike, NDArray
 import pyccl as ccl
+from numpy.typing import ArrayLike, NDArray
 
 if TYPE_CHECKING:
     Cosmology = ccl.Cosmology
@@ -25,12 +25,12 @@ else:
 
 __all__ = (
     "C_KM_S",
+    "comoving_distance_mpc",
     "cosmo_object",
+    "differential_comoving_volume",
+    "distance_modulus",
     "lookback_time_gyr",
     "luminosity_distance_mpc",
-    "comoving_distance_mpc",
-    "distance_modulus",
-    "differential_comoving_volume",
 )
 
 C_KM_S = 299792.458  # speed of light in vacuum in km/s

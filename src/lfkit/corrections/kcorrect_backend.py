@@ -88,14 +88,14 @@ def _build_kcorrect_cached(key: tuple) -> kk.Kcorrect:
     require_responses(list(responses_out), response_dir)
     require_responses(list(responses_map), response_dir)
 
-    kwargs: dict[str, Any] = dict(
-        responses=list(responses_in),
-        responses_out=list(responses_out),
-        responses_map=list(responses_map),
-        redshift_range=[float(redshift_range[0]), float(redshift_range[1])],
-        nredshift=int(nredshift),
-        abcorrect=bool(abcorrect),
-    )
+    kwargs: dict[str, Any] = {
+        "responses": list(responses_in),
+        "responses_out": list(responses_out),
+        "responses_map": list(responses_map),
+        "redshift_range": [float(redshift_range[0]), float(redshift_range[1])],
+        "nredshift": int(nredshift),
+        "abcorrect": bool(abcorrect),
+    }
 
     if response_dir is not None:
         sig = inspect.signature(kk.Kcorrect)

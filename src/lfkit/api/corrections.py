@@ -49,14 +49,14 @@ custom surveys or custom filter curves.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 import numpy as np
 
-from lfkit.utils.interpolation import build_1d_interpolator, as_1d_finite_grid
 import lfkit.corrections.poggianti1997 as pogg
 from lfkit.corrections.filters import DEFAULT_RESPONSE_MAP
+from lfkit.utils.interpolation import as_1d_finite_grid, build_1d_interpolator
 
 ArrayLike = object  # anything np.asarray can handle
 
@@ -144,7 +144,7 @@ class Corrections:
         method: str = "pchip",
         extrapolate: bool = True,
         e_model: str = "poggianti",
-    ) -> "Corrections":
+    ) -> Corrections:
         """Construct corrections from Poggianti (1997) tabulated models.
 
         Args:
@@ -219,7 +219,7 @@ class Corrections:
         anchor_z0: bool = True,
         method: str = "pchip",
         extrapolate: bool = True,
-    ) -> "Corrections":
+    ) -> Corrections:
         """Construct k(z) using the kcorrect SED template model.
 
         The spectral energy distribution (SED) is constrained by a two-band
