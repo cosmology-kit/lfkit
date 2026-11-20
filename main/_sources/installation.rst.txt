@@ -35,13 +35,30 @@ with the development dependencies::
 This allows local changes to the source code to be picked up without
 reinstalling the package.
 
+To run the full test suite with both supported cosmology backends, install::
+
+   pip install -e ".[dev,ccl]"
+
+To build the documentation, install::
+
+   pip install -e ".[docs,viz,ccl]"
+
 
 Optional dependencies
 ---------------------
 
-Some LFKit examples use optional third-party packages for cosmology calculations,
-photometric corrections, or plotting. Install these separately when needed by a
-specific example page.
+LFKit uses Astropy for its default background cosmology calculations.
+PyCCL is supported as an optional cosmology backend and is not required
+for a standard installation.
 
-For example, if an example uses CCL, install CCL following the instructions for
-your system and Python environment before running that example.
+To install LFKit with PyCCL support, run::
+
+   pip install "py-lfkit[ccl]"
+
+For plotting and visualization utilities, install::
+
+   pip install "py-lfkit[viz]"
+
+Multiple optional dependency groups can be installed together::
+
+   pip install "py-lfkit[ccl,viz]"

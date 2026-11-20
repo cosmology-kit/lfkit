@@ -19,5 +19,4 @@ lfkit.corrections.poggianti1997
       poggianti1997_lookback_time_gyr
       poggianti1997_time_since_bb_gyr
       poggianti1997_to_accelerating_redshift
-      z_from_lookback_time
    

@@ -12,7 +12,7 @@
 
    api
    corrections
-   cosmo
+   cosmology
    luminosity_functions
    photometry
    utils

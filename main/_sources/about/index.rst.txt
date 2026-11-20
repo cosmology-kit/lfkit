@@ -49,9 +49,23 @@ Core components
       and rest-frame absolute magnitudes.
 
 
+   .. grid-item-card::
+      :link: cosmology_overview
+      :link-type: doc
+      :shadow: md
+
+      .. card-header::
+
+         **Cosmology**
+
+      Backend-independent cosmological distances, expansion histories,
+      comoving volumes, and lookback times using Astropy or PyCCL.
+
+
 .. toctree::
    :maxdepth: 1
    :hidden:
 
    corrections_overview
    photometry_overview
+   cosmology_overview

@@ -3,13 +3,13 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="lfkit.cosmo.cosmology" href="lfkit.cosmo.cosmology.html"><link rel="prev" title="lfkit.corrections.responses" href="lfkit.corrections.responses.html">
-        <link rel="canonical" href="https://cosmology-kit.github.io/lfkit/api/generated/lfkit.cosmo.html">
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="lfkit.cosmology.distances" href="lfkit.cosmology.distances.html"><link rel="prev" title="lfkit.cosmology" href="lfkit.cosmology.html">
+        <link rel="canonical" href="https://cosmology-kit.github.io/lfkit/api/generated/lfkit.cosmology.background.html">
         <link rel="prefetch" href="../../_static/logos/lfkit_logo-icon.png" as="image">
         <link rel="prefetch" href="../../_static/logos/lfkit_logo-icon.png" as="image">
 
     <link rel="shortcut icon" href="../../_static/lfkit_logo-icon.png"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>lfkit.cosmo - LFKit Documentation</title>
+        <title>lfkit.cosmology.background - LFKit Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -221,6 +221,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../about/index.html"> About LFKit</a><input aria-label="Toggle navigation of  About LFKit" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../about/corrections_overview.html"> Photometric Corrections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../about/photometry_overview.html"> Photometry Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about/cosmology_overview.html"> Cosmology</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../examples/index.html"> Examples</a><input aria-label="Toggle navigation of  Examples" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -260,8 +261,10 @@
 <li class="toctree-l4"><a class="reference internal" href="lfkit.corrections.responses.html">lfkit.corrections.responses</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">lfkit.cosmo</a><input aria-label="Toggle navigation of lfkit.cosmo" checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="lfkit.cosmo.cosmology.html">lfkit.cosmo.cosmology</a></li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="lfkit.cosmology.html">lfkit.cosmology</a><input aria-label="Toggle navigation of lfkit.cosmology" checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">lfkit.cosmology.background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.cosmology.distances.html">lfkit.cosmology.distances</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.cosmology.times.html">lfkit.cosmology.times</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="lfkit.luminosity_functions.html">lfkit.luminosity_functions</a><input aria-label="Toggle navigation of lfkit.luminosity_functions" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -330,12 +333,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/blob/main/docs/api/generated/lfkit.cosmo.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/blob/main/docs/api/generated/lfkit.cosmology.background.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/edit/main/docs/api/generated/lfkit.cosmo.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/edit/main/docs/api/generated/lfkit.cosmology.background.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -352,14 +355,24 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-lfkit.cosmo">
-<span id="lfkit-cosmo"></span><h1>lfkit.cosmo<a class="headerlink" href="#module-lfkit.cosmo" title="Link to this heading"><span>#</span></a></h1>
-<p class="rubric">Modules</p>
+          <section id="module-lfkit.cosmology.background">
+<span id="lfkit-cosmology-background"></span><h1>lfkit.cosmology.background<a class="headerlink" href="#module-lfkit.cosmology.background" title="Link to this heading"><span>#</span></a></h1>
+<p>Cosmological expansion and comoving volume.</p>
+<p class="rubric">Functions</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.cosmo.cosmology.html#module-lfkit.cosmo.cosmology" title="lfkit.cosmo.cosmology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmology</span></code></a></p></td>
-<td><p>Cosmology utilities for LFKit.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">differential_comoving_volume</span></code>(cosmo_obj, z[, ...])</p></td>
+<td><p>Compute differential comoving volume per unit redshift.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dimensionless_hubble_parameter</span></code>(cosmo_obj)</p></td>
+<td><p>Return the dimensionless Hubble parameter h.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expansion_rate</span></code>(cosmo_obj, z)</p></td>
+<td><p>Compute the dimensionless expansion rate.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hubble_parameter</span></code>(cosmo_obj, z)</p></td>
+<td><p>Compute the Hubble parameter in km/s/Mpc.</p></td>
 </tr>
 </tbody>
 </table>
@@ -371,23 +384,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="lfkit.cosmo.cosmology.html">
+          <a class="next-page" href="lfkit.cosmology.distances.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">lfkit.cosmo.cosmology</div>
+                <div class="title">lfkit.cosmology.distances</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="lfkit.corrections.responses.html">
+          <a class="prev-page" href="lfkit.cosmology.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">lfkit.corrections.responses</div>
+                <div class="title">lfkit.cosmology</div>
                 
               </div>
             </a>

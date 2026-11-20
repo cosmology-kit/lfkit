@@ -221,6 +221,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="about/index.html"> About LFKit</a><input aria-label="Toggle navigation of  About LFKit" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="about/corrections_overview.html"> Photometric Corrections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about/photometry_overview.html"> Photometry Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about/cosmology_overview.html"> Cosmology</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="examples/index.html"> Examples</a><input aria-label="Toggle navigation of  Examples" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -260,8 +261,10 @@
 <li class="toctree-l4"><a class="reference internal" href="api/generated/lfkit.corrections.responses.html">lfkit.corrections.responses</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="api/generated/lfkit.cosmo.html">lfkit.cosmo</a><input aria-label="Toggle navigation of lfkit.cosmo" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/generated/lfkit.cosmo.cosmology.html">lfkit.cosmo.cosmology</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="api/generated/lfkit.cosmology.html">lfkit.cosmology</a><input aria-label="Toggle navigation of lfkit.cosmology" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/generated/lfkit.cosmology.background.html">lfkit.cosmology.background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/generated/lfkit.cosmology.distances.html">lfkit.cosmology.distances</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/generated/lfkit.cosmology.times.html">lfkit.cosmology.times</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="api/generated/lfkit.luminosity_functions.html">lfkit.luminosity_functions</a><input aria-label="Toggle navigation of lfkit.luminosity_functions" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -380,14 +383,32 @@ with the development dependencies:</p>
 </div>
 <p>This allows local changes to the source code to be picked up without
 reinstalling the package.</p>
+<p>To run the full test suite with both supported cosmology backends, install:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">".[dev,ccl]"</span>
+</pre></div>
+</div>
+<p>To build the documentation, install:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">".[docs,viz,ccl]"</span>
+</pre></div>
+</div>
 </section>
 <section id="optional-dependencies">
 <h2>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"><span>#</span></a></h2>
-<p>Some LFKit examples use optional third-party packages for cosmology calculations,
-photometric corrections, or plotting. Install these separately when needed by a
-specific example page.</p>
-<p>For example, if an example uses CCL, install CCL following the instructions for
-your system and Python environment before running that example.</p>
+<p>LFKit uses Astropy for its default background cosmology calculations.
+PyCCL is supported as an optional cosmology backend and is not required
+for a standard installation.</p>
+<p>To install LFKit with PyCCL support, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="s2">"py-lfkit[ccl]"</span>
+</pre></div>
+</div>
+<p>For plotting and visualization utilities, install:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="s2">"py-lfkit[viz]"</span>
+</pre></div>
+</div>
+<p>Multiple optional dependency groups can be installed together:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="s2">"py-lfkit[ccl,viz]"</span>
+</pre></div>
+</div>
 </section>
 </section>
 
