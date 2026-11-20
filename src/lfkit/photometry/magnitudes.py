@@ -23,11 +23,11 @@ from lfkit.utils.types import Cosmology, FloatArray, FloatInput
 from lfkit.utils.validators import validate_luminosity_distance
 
 __all__ = [
-    "total_magnitude_correction",
     "absolute_magnitude",
     "absolute_magnitude_from_luminosity_distance",
     "apparent_magnitude",
     "apparent_magnitude_from_luminosity_distance",
+    "total_magnitude_correction",
 ]
 
 __api_aliases__ = {
