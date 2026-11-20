@@ -433,7 +433,7 @@ than an intrinsic absolute magnitude.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/7453a1aad11a565d5a9fc5679f17f3ac/magnitudes_and_luminosities-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/3d392ac51579cbb9d47435a29dedbfe4/magnitudes_and_luminosities-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/magnitudes_and_luminosities-1.png"><img alt="../_images/magnitudes_and_luminosities-1.png" class="plot-directive" src="../_images/magnitudes_and_luminosities-1.png" style="width: 520px;" />
 </a>
@@ -445,6 +445,11 @@ than an intrinsic absolute magnitude.</p>
 and absolute magnitude.</p>
 <p>The luminosity-distance versions are useful when a workflow already has a
 distance array from another cosmology backend.</p>
+<p>Both the cosmology-based and distance-based conversions accept an optional
+<code class="docutils literal notranslate"><span class="pre">h</span></code> argument. If supplied, the luminosity distance is multiplied by <code class="docutils literal notranslate"><span class="pre">h</span></code>
+before computing the distance modulus.</p>
+<p>Zero luminosity distance returns the corresponding infinite magnitude limit
+for finite input magnitudes and corrections.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">cmasher</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cmr</span>
@@ -502,7 +507,7 @@ distance array from another cosmology backend.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/d46128e660f5259baa415f1066d72808/magnitudes_and_luminosities-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/e17ab59f3602337c25a6ed2a813f3030/magnitudes_and_luminosities-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/magnitudes_and_luminosities-2.png"><img alt="../_images/magnitudes_and_luminosities-2.png" class="plot-directive" src="../_images/magnitudes_and_luminosities-2.png" style="width: 520px;" />
 </a>
@@ -554,11 +559,121 @@ increases toward more negative absolute magnitudes.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/64c6a56d53c49cba1153d13786adcd60/magnitudes_and_luminosities-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/abef8d21f28c3cfdfac23dfccbd24986/magnitudes_and_luminosities-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/magnitudes_and_luminosities-3.png"><img alt="../_images/magnitudes_and_luminosities-3.png" class="plot-directive" src="../_images/magnitudes_and_luminosities-3.png" style="width: 520px;" />
 </a>
 </figure>
+</section>
+<section id="luminosity-and-magnitude-round-trip">
+<h2>Luminosity and magnitude round-trip<a class="headerlink" href="#luminosity-and-magnitude-round-trip" title="Link to this heading"><span>#</span></a></h2>
+<p>The luminosity conversion functions accept an explicit reference magnitude
+and reference luminosity.</p>
+<p>For example, setting the reference magnitude to <span class="math notranslate nohighlight">\(M_\star\)</span> and
+the reference luminosity to unity expresses luminosities in units
+of <span class="math notranslate nohighlight">\(L_\star\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lfkit.photometry.luminosities</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">luminosity_from_magnitude</span><span class="p">,</span>
+    <span class="n">magnitude_from_luminosity</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">absolute_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">23.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">18.0</span><span class="p">])</span>
+
+<span class="n">luminosity</span> <span class="o">=</span> <span class="n">luminosity_from_magnitude</span><span class="p">(</span>
+    <span class="n">absolute_mag</span><span class="p">,</span>
+    <span class="n">reference_magnitude</span><span class="o">=-</span><span class="mf">20.5</span><span class="p">,</span>
+    <span class="n">reference_luminosity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">recovered</span> <span class="o">=</span> <span class="n">magnitude_from_luminosity</span><span class="p">(</span>
+    <span class="n">luminosity</span><span class="p">,</span>
+    <span class="n">reference_magnitude</span><span class="o">=-</span><span class="mf">20.5</span><span class="p">,</span>
+    <span class="n">reference_luminosity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">recovered</span><span class="p">,</span> <span class="n">absolute_mag</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The inverse transformation is defined for finite, strictly positive
+luminosities. Both transformations support NumPy broadcasting of
+magnitudes and reference magnitudes.</p>
+<p>The round-trip relation holds within the unclipped numerical range
+of the forward luminosity conversion.</p>
+<p>The same functions are available through the existing
+<code class="docutils literal notranslate"><span class="pre">lf.luminosities.from_magnitude</span></code> and <code class="docutils literal notranslate"><span class="pre">lf.luminosities.to_magnitude</span></code>
+namespace methods.</p>
+</section>
+<section id="magnitude-conventions-with-little-h">
+<h2>Magnitude conventions with little h<a class="headerlink" href="#magnitude-conventions-with-little-h" title="Link to this heading"><span>#</span></a></h2>
+<p>The distance-based conversions can be used directly, without constructing
+a cosmology object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lfkit.photometry.magnitudes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">absolute_magnitude_from_luminosity_distance</span><span class="p">,</span>
+    <span class="n">apparent_magnitude_from_luminosity_distance</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">apparent_mag</span> <span class="o">=</span> <span class="mf">24.0</span>
+<span class="n">distance_mpc</span> <span class="o">=</span> <span class="mf">1000.0</span>
+
+<span class="n">absolute_mag</span> <span class="o">=</span> <span class="n">absolute_magnitude_from_luminosity_distance</span><span class="p">(</span>
+    <span class="n">apparent_mag</span><span class="p">,</span>
+    <span class="n">distance_mpc</span><span class="p">,</span>
+    <span class="n">h</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">k_correction</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">e_correction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">recovered</span> <span class="o">=</span> <span class="n">apparent_magnitude_from_luminosity_distance</span><span class="p">(</span>
+    <span class="n">absolute_mag</span><span class="p">,</span>
+    <span class="n">distance_mpc</span><span class="p">,</span>
+    <span class="n">h</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">k_correction</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">e_correction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">recovered</span><span class="p">,</span> <span class="n">apparent_mag</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The same distance and correction conventions must be used in both
+directions.</p>
+</section>
+<section id="photometric-flux-conversions">
+<h2>Photometric flux conversions<a class="headerlink" href="#photometric-flux-conversions" title="Link to this heading"><span>#</span></a></h2>
+<p>The flux utilities convert AB magnitudes to maggies and propagate
+magnitude uncertainties into flux inverse variances.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lfkit.photometry.fluxes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">mag_to_maggies</span><span class="p">,</span>
+    <span class="n">maggies_to_mag</span><span class="p">,</span>
+    <span class="n">magerr_to_ivar_maggies</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">magnitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">,</span> <span class="mf">22.0</span><span class="p">])</span>
+<span class="n">sigma_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">])</span>
+
+<span class="n">flux</span> <span class="o">=</span> <span class="n">mag_to_maggies</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span>
+<span class="n">recovered</span> <span class="o">=</span> <span class="n">maggies_to_mag</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+
+<span class="n">inverse_variance</span> <span class="o">=</span> <span class="n">magerr_to_ivar_maggies</span><span class="p">(</span>
+    <span class="n">magnitude</span><span class="p">,</span>
+    <span class="n">sigma_m</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">recovered</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">inverse_variance</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+<span class="k">assert</span> <span class="n">inverse_variance</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+<span class="k">assert</span> <span class="n">inverse_variance</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>Missing magnitude uncertainties are masked through zero inverse
+variance, making these utilities suitable for preparing photometric
+inputs for correction workflows.</p>
 </section>
 </section>
 
@@ -646,6 +761,9 @@ increases toward more negative absolute magnitudes.</p>
 <li><a class="reference internal" href="#lf-from-apparent-magnitude">LF from apparent magnitude</a></li>
 <li><a class="reference internal" href="#magnitude-conversions">Magnitude conversions</a></li>
 <li><a class="reference internal" href="#luminosity-ratio-from-magnitudes">Luminosity ratio from magnitudes</a></li>
+<li><a class="reference internal" href="#luminosity-and-magnitude-round-trip">Luminosity and magnitude round-trip</a></li>
+<li><a class="reference internal" href="#magnitude-conventions-with-little-h">Magnitude conventions with little h</a></li>
+<li><a class="reference internal" href="#photometric-flux-conversions">Photometric flux conversions</a></li>
 </ul>
 </li>
 </ul>

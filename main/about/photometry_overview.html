@@ -444,6 +444,84 @@ for observing a redshifted galaxy spectrum through a fixed bandpass. The
 evolution correction accounts for intrinsic luminosity evolution of the galaxy
 population, depending on the convention adopted in the analysis.</p>
 </section>
+<section id="distance-modulus-and-cosmological-conventions">
+<h2>Distance modulus and cosmological conventions<a class="headerlink" href="#distance-modulus-and-cosmological-conventions" title="Link to this heading"><span>#</span></a></h2>
+<p>For a luminosity distance expressed in Mpc, the distance modulus is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mu(z) =
+25 + 5\log_{10}
+\left(\frac{d_L(z)}{\mathrm{Mpc}}\right).\]</div>
+</div>
+<p>Some luminosity function measurements use a convention in which
+the distance is rescaled by the dimensionless Hubble parameter
+<span class="math notranslate nohighlight">\(h\)</span>. In this case,</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mu_h(z) =
+25 + 5\log_{10}
+\left(\frac{h d_L(z)}{\mathrm{Mpc}}\right)
+=
+\mu(z) + 5\log_{10}(h).\]</div>
+</div>
+<p>The corresponding absolute magnitude is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[M_h = M - 5\log_{10}(h).\]</div>
+</div>
+<p>LFKit supports both conventions through the optional <code class="docutils literal notranslate"><span class="pre">h</span></code> argument
+in its magnitude conversion functions. By default, no rescaling
+is applied.</p>
+<p>The conversions accept either a cosmology object and redshift or
+a directly supplied luminosity distance. Both interfaces use the
+same photometric conventions.</p>
+<p>At zero luminosity distance, the distance modulus approaches
+negative infinity. For finite magnitudes and corrections, the
+apparent-to-absolute conversion therefore returns positive infinity,
+while the absolute-to-apparent conversion returns negative infinity.</p>
+<p>Negative and non-finite luminosity distances are rejected.
+Higher-level luminosity function integrations may impose stricter
+requirements on their distance and magnitude inputs.</p>
+</section>
+<section id="ab-magnitudes-and-fluxes">
+<h2>AB magnitudes and fluxes<a class="headerlink" href="#ab-magnitudes-and-fluxes" title="Link to this heading"><span>#</span></a></h2>
+<p>In the AB magnitude system, the flux density can be expressed
+in maggies, a linear flux unit normalized such that an AB magnitude
+of zero corresponds to one maggie.</p>
+<p>The conversion is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[f = 10^{-0.4m_{\mathrm{AB}}},\]</div>
+</div>
+<p>with inverse</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[m_{\mathrm{AB}} = -2.5\log_{10}(f).\]</div>
+</div>
+<p>For numerical purposes, the inverse conversion applies a configurable
+positive flux floor. Fluxes below this floor, including zero and
+negative measurements, map to the corresponding limiting magnitude.
+This is a numerical convention rather than a physical magnitude
+measurement for a non-positive flux.</p>
+<p>Magnitude uncertainties can be propagated into flux uncertainties
+using a first-order approximation:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sigma_f =
+0.4\ln(10)\,f\,\sigma_m.\]</div>
+</div>
+<p>The corresponding inverse variance is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mathrm{ivar}_f =
+\frac{1}{\sigma_f^2}.\]</div>
+</div>
+<p>Non-positive or non-finite propagated uncertainties receive zero
+inverse variance. Inverse variances that cannot be represented
+as finite floating-point values are also masked.</p>
+<p>This propagation assumes small magnitude uncertainties and does
+not account for covariance between photometric bands.</p>
+</section>
 <section id="magnitude-space-luminosity-functions">
 <h2>Magnitude-space luminosity functions<a class="headerlink" href="#magnitude-space-luminosity-functions" title="Link to this heading"><span>#</span></a></h2>
 <p>LFKit works primarily in rest-frame absolute magnitude space. This is a natural
@@ -795,6 +873,8 @@ with executable examples in the example pages.</p>
             <ul>
 <li><a class="reference internal" href="#"> Photometry Overview</a><ul>
 <li><a class="reference internal" href="#luminosity-and-magnitude">Luminosity and magnitude</a></li>
+<li><a class="reference internal" href="#distance-modulus-and-cosmological-conventions">Distance modulus and cosmological conventions</a></li>
+<li><a class="reference internal" href="#ab-magnitudes-and-fluxes">AB magnitudes and fluxes</a></li>
 <li><a class="reference internal" href="#magnitude-space-luminosity-functions">Magnitude-space luminosity functions</a></li>
 <li><a class="reference internal" href="#the-schechter-luminosity-function">The Schechter luminosity function</a></li>
 <li><a class="reference internal" href="#schechter-function-in-magnitude-space">Schechter function in magnitude space</a></li>
