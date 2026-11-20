@@ -5,7 +5,6 @@ from __future__ import annotations
 from importlib.resources import files
 
 import numpy as np
-import pyccl as ccl
 
 from lfkit.luminosity_functions.completeness import (
     catalog_fraction,
@@ -27,26 +26,10 @@ def toy_luminosity_function(
     return phi0 * np.exp(-0.5 * ((absolute_mag - m_star) / width) ** 2)
 
 
-def make_cosmology() -> ccl.Cosmology:
-    """Return a small test cosmology."""
-    return ccl.Cosmology(
-        Omega_c=0.25,
-        Omega_b=0.05,
-        h=0.7,
-        sigma8=0.8,
-        n_s=0.96,
-        transfer_function="bbks",
-        matter_power_spectrum="linear",
-    )
-
-
 def load_fake_catalog() -> np.ndarray:
     """Return the packaged fake magnitude-limited catalog."""
     path = (
-        files("lfkit")
-        / "data"
-        / "demo_catalogs"
-        / "fake_magnitude_limited_catalog.csv"
+        files("lfkit") / "data" / "demo_catalogs" / "fake_magnitude_limited_catalog.csv"
     )
     return np.genfromtxt(path, delimiter=",", names=True, dtype=None, encoding="utf-8")
 
@@ -66,10 +49,10 @@ def test_fake_catalog_is_packaged() -> None:
     }
 
 
-def test_completeness_fraction_on_fake_catalog_redshifts() -> None:
+def test_completeness_fraction_on_fake_catalog_redshifts(cosmology) -> None:
     """Tests that completeness fractions are valid on fake catalog redshifts."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
 
     z = np.asarray(catalog["z"], dtype=float)
 
@@ -89,10 +72,10 @@ def test_completeness_fraction_on_fake_catalog_redshifts() -> None:
     assert np.all(completeness <= 1.0)
 
 
-def test_observed_and_missing_fractions_sum_to_one() -> None:
+def test_observed_and_missing_fractions_sum_to_one(cosmology) -> None:
     """Tests that observed and out-of-catalog fractions are complementary."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
 
     z = np.asarray(catalog["z"], dtype=float)
 
@@ -123,10 +106,10 @@ def test_observed_and_missing_fractions_sum_to_one() -> None:
     )
 
 
-def test_deeper_catalog_limit_increases_completeness() -> None:
+def test_deeper_catalog_limit_increases_completeness(cosmology) -> None:
     """Tests that a fainter apparent magnitude limit increases completeness."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
 
     z = np.asarray(catalog["z"], dtype=float)
 
@@ -153,10 +136,10 @@ def test_deeper_catalog_limit_increases_completeness() -> None:
     assert np.mean(deep) > np.mean(shallow)
 
 
-def test_deeper_catalog_limit_decreases_missing_density() -> None:
+def test_deeper_catalog_limit_decreases_missing_density(cosmology) -> None:
     """Tests that a fainter apparent magnitude limit misses no more galaxies."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
 
     z = np.asarray(catalog["z"], dtype=float)
 
@@ -182,10 +165,10 @@ def test_deeper_catalog_limit_decreases_missing_density() -> None:
     np.testing.assert_array_less(deep, shallow + 1.0e-8)
 
 
-def test_deeper_catalog_limit_increases_observed_density() -> None:
+def test_deeper_catalog_limit_increases_observed_density(cosmology) -> None:
     """Tests that a fainter apparent magnitude limit observes no fewer galaxies."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
 
     z = np.asarray(catalog["z"], dtype=float)
 
@@ -212,10 +195,10 @@ def test_deeper_catalog_limit_increases_observed_density() -> None:
     assert np.mean(deep) > np.mean(shallow)
 
 
-def test_observed_and_missing_number_densities_sum_to_total_density() -> None:
+def test_observed_and_missing_number_densities_sum_to_total_density(cosmology) -> None:
     """Tests that observed and missing densities recover the total LF density."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
 
     z = np.asarray(catalog["z"], dtype=float)
 
@@ -272,10 +255,10 @@ def test_fake_catalog_apparent_magnitudes_are_finite() -> None:
     assert np.all(np.isfinite(m_app))
 
 
-def test_catalog_fraction_accepts_k_and_e_corrections() -> None:
+def test_catalog_fraction_accepts_k_and_e_corrections(cosmology) -> None:
     """Tests fake-catalog completeness with k/e corrections."""
     catalog = load_fake_catalog()
-    cosmo = make_cosmology()
+    cosmo = cosmology
     z = np.asarray(catalog["z"], dtype=float)
 
     completeness = catalog_fraction(
@@ -294,5 +277,3 @@ def test_catalog_fraction_accepts_k_and_e_corrections() -> None:
     assert completeness.shape == z.shape
     assert np.all(np.isfinite(completeness))
     assert np.all((completeness >= 0.0) & (completeness <= 1.0))
-
-

@@ -281,7 +281,7 @@ def schechter_from_m(
     defined and evaluated in rest-frame absolute magnitude space.
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         apparent_mag: Observed apparent magnitude value(s), which are
             converted to rest-frame absolute magnitudes before LF evaluation.
@@ -357,7 +357,7 @@ def evolving_schechter_from_m(
         x(M, z) = 10^{-0.4 (M - M_\star(z))}.
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         apparent_mag: Apparent magnitude value(s).
         phi_model: Evolution model for ``phi_star``.
@@ -461,7 +461,7 @@ def double_schechter_from_m(
         x_t = 10^{-0.4 (M_t - M_\star)}.
 
     Args:
-        cosmo_obj: A PyCCL cosmology object.
+        cosmo_obj: An Astropy or PyCCL cosmology object.
         z: Redshift value or array-like of redshift values.
         apparent_mag: Apparent magnitude value(s).
         phi_star: Overall normalization.

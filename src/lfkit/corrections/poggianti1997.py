@@ -15,9 +15,9 @@ from pathlib import Path
 from typing import Final
 
 import numpy as np
+from astropy.cosmology import FlatLambdaCDM
 
-from lfkit.cosmo.cosmology import cosmo_object as build_cosmo
-from lfkit.cosmo.cosmology import lookback_time_gyr
+from lfkit.cosmology.times import z_from_lookback_time
 from lfkit.utils.interpolation import (
     InterpMethod,
     Interpolator,
@@ -39,7 +39,6 @@ __all__ = (
     "poggianti1997_lookback_time_gyr",
     "poggianti1997_time_since_bb_gyr",
     "poggianti1997_to_accelerating_redshift",
-    "z_from_lookback_time",
 )
 
 
@@ -279,69 +278,6 @@ def poggianti1997_lookback_time_gyr(z: np.ndarray | float) -> np.ndarray:
     return poggianti1997_time_since_bb_gyr(0.0) - poggianti1997_time_since_bb_gyr(z)
 
 
-def _build_tlb_to_z_grid(
-    cosmo_obj, *, zmax: float, nz: int
-) -> tuple[np.ndarray, np.ndarray]:
-    """Build a monotonic mapping from lookback time to redshift for a cosmology.
-
-    Args:
-        cosmo_obj: Cosmology object accepted by ``lookback_time_gyr``.
-        zmax: Maximum redshift for the mapping grid.
-        nz: Number of samples used to build the mapping grid.
-
-    Returns:
-        Tuple ``(t_grid, z_grid)`` with strictly increasing ``t_grid``.
-    """
-    if zmax <= 0:
-        raise ValueError("zmax must be > 0.")
-    if nz < 32:
-        raise ValueError("nz is too small; use at least ~256 in practice.")
-
-    z_grid = np.linspace(0.0, float(zmax), int(nz))
-    t_grid = lookback_time_gyr(cosmo_obj, z_grid)
-
-    order = np.argsort(t_grid)
-    t_grid = t_grid[order]
-    z_grid = z_grid[order]
-
-    keep = np.ones_like(t_grid, dtype=bool)
-    keep[1:] = t_grid[1:] > t_grid[:-1]
-    return t_grid[keep], z_grid[keep]
-
-
-def z_from_lookback_time(
-    cosmo_obj,
-    t_lb_gyr: np.ndarray | float,
-    *,
-    zmax: float = 20.0,
-    nz: int = 4096,
-) -> np.ndarray:
-    """Invert lookback time to redshift using a precomputed interpolation grid.
-
-    Args:
-        cosmo_obj: Cosmology object accepted by ``lookback_time_gyr``.
-        t_lb_gyr: Lookback time value(s) in Gyr.
-        zmax: Maximum redshift used to build the inversion grid.
-        nz: Number of samples used to build the inversion grid.
-
-    Returns:
-        Redshift value(s) corresponding to ``t_lb_gyr``.
-
-    Raises:
-        ValueError: If requested lookback times fall outside the grid range.
-    """
-    t_lb = np.asarray(t_lb_gyr, dtype=float)
-    t_grid, z_grid = _build_tlb_to_z_grid(cosmo_obj, zmax=zmax, nz=nz)
-
-    if np.any(t_lb < t_grid[0]) or np.any(t_lb > t_grid[-1]):
-        raise ValueError(
-            "Target lookback time outside inversion range. "
-            "Increase zmax or check inputs."
-        )
-
-    return np.interp(t_lb, t_grid, z_grid)
-
-
 def poggianti1997_to_accelerating_redshift(
     z_dec: np.ndarray | float,
     *,
@@ -423,7 +359,10 @@ def make_ecorr_interpolator(
         original_z: If True, interpret ``z_e`` as Poggianti (1997) redshifts.
             If False, remap ``z_e`` to the target cosmology via lookback time.
         cosmo: Target cosmology used for the remapping when ``original_z=False``.
-            If not provided, lfkit's default cosmology is used.
+            Accepts an Astropy or PyCCL cosmology object.
+            If not provided, a flat LambdaCDM cosmology with
+            H0=67 km/s/Mpc, Om0=0.30, Ob0=0.05, Tcmb0=2.7255 K,
+            Neff=3.044, and massless neutrinos is used.
         zmap_zmax: Maximum redshift used to build the remapping inversion grid.
         zmap_nz: Number of samples used to build the remapping inversion grid.
         method: Interpolation method (``"pchip"``, ``"akima"``, or ``"linear"``).
@@ -437,7 +376,14 @@ def make_ecorr_interpolator(
 
     if not original_z:
         if cosmo is None:
-            cosmo = build_cosmo()
+            cosmo = FlatLambdaCDM(
+                H0=67.0,
+                Om0=0.30,
+                Ob0=0.05,
+                Tcmb0=2.7255,
+                Neff=3.044,
+                m_nu=0.0,
+            )
         z_e = poggianti1997_to_accelerating_redshift(
             z_e, cosmo_obj=cosmo, zmax=zmap_zmax, nz=zmap_nz
         )

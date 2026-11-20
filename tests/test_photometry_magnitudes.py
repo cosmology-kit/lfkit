@@ -70,7 +70,9 @@ def test_total_magnitude_correction_broadcasts_scalar_and_array() -> None:
     np.testing.assert_allclose(out, expected)
 
 
-def test_absolute_magnitude_without_corrections(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_absolute_magnitude_without_corrections(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that absolute_magnitude applies M = m - mu."""
 
     def mock_distance_modulus(
@@ -127,7 +129,9 @@ def test_absolute_magnitude_with_corrections(monkeypatch: pytest.MonkeyPatch) ->
     np.testing.assert_allclose(out, expected)
 
 
-def test_apparent_magnitude_without_corrections(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_apparent_magnitude_without_corrections(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Tests that apparent_magnitude applies m = M + mu."""
 
     def mock_distance_modulus(
@@ -407,7 +411,9 @@ def test_luminosity_distance_magnitude_conversions_are_inverse() -> None:
     np.testing.assert_allclose(recovered, apparent_mag)
 
 
-def test_luminosity_distance_magnitude_conversions_are_inverse_with_corrections() -> None:
+def test_luminosity_distance_magnitude_conversions_are_inverse_with_corrections() -> (
+    None
+):
     """Tests luminosity-distance conversions invert each other with corrections."""
     apparent_mag = np.array([24.0, 25.0, 26.0])
     luminosity_distance = np.array([10.0, 20.0, 30.0])
@@ -516,7 +522,9 @@ def test_apparent_magnitude_from_luminosity_distance_rejects_zero_distance() -> 
         )
 
 
-def test_absolute_magnitude_from_luminosity_distance_rejects_negative_distance() -> None:
+def test_absolute_magnitude_from_luminosity_distance_rejects_negative_distance() -> (
+    None
+):
     """Tests that apparent-to-absolute conversion rejects negative distance."""
     with pytest.raises(ValueError, match="negative values"):
         absolute_magnitude_from_luminosity_distance(
@@ -525,7 +533,9 @@ def test_absolute_magnitude_from_luminosity_distance_rejects_negative_distance()
         )
 
 
-def test_apparent_magnitude_from_luminosity_distance_rejects_negative_distance() -> None:
+def test_apparent_magnitude_from_luminosity_distance_rejects_negative_distance() -> (
+    None
+):
     """Tests that absolute-to-apparent conversion rejects negative distance."""
     with pytest.raises(ValueError, match="negative values"):
         apparent_magnitude_from_luminosity_distance(
@@ -534,7 +544,9 @@ def test_apparent_magnitude_from_luminosity_distance_rejects_negative_distance()
         )
 
 
-def test_absolute_magnitude_from_luminosity_distance_rejects_nonfinite_distance() -> None:
+def test_absolute_magnitude_from_luminosity_distance_rejects_nonfinite_distance() -> (
+    None
+):
     """Tests that apparent-to-absolute conversion rejects non-finite distance."""
     with pytest.raises(ValueError, match="luminosity_distance_mpc contains NaN"):
         absolute_magnitude_from_luminosity_distance(
@@ -543,7 +555,9 @@ def test_absolute_magnitude_from_luminosity_distance_rejects_nonfinite_distance(
         )
 
 
-def test_apparent_magnitude_from_luminosity_distance_rejects_nonfinite_distance() -> None:
+def test_apparent_magnitude_from_luminosity_distance_rejects_nonfinite_distance() -> (
+    None
+):
     """Tests that absolute-to-apparent conversion rejects non-finite distance."""
     with pytest.raises(ValueError, match="luminosity_distance_mpc contains NaN"):
         apparent_magnitude_from_luminosity_distance(
@@ -601,7 +615,9 @@ def test_luminosity_distance_formula_matches_known_distance_modulus() -> None:
     assert result == pytest.approx(-5.0)
 
 
-def test_apparent_magnitude_from_luminosity_distance_matches_known_distance_modulus() -> None:
+def test_apparent_magnitude_from_luminosity_distance_matches_known_distance_modulus() -> (
+    None
+):
     """Tests that absolute-to-apparent conversion uses the expected distance modulus."""
     result = apparent_magnitude_from_luminosity_distance(
         absolute_mag=0.0,
@@ -679,3 +695,44 @@ def test_magnitudes_api_aliases_match_public_functions() -> None:
     for public_name in magnitudes.__api_aliases__:
         assert public_name in magnitudes.__all__
         assert callable(getattr(magnitudes, public_name))
+
+
+def test_magnitude_roundtrip_with_cosmology(cosmology):
+    """Tests that magnitude conversions are invertible across cosmological backends."""
+    z = np.array([0.1, 0.5, 1.0, 2.0])
+    m = np.array([19.0, 21.0, 23.0, 25.0])
+
+    absolute = magnitudes.absolute_magnitude(
+        cosmology,
+        z,
+        m,
+        h=0.67,
+        k_correction=0.3,
+        e_correction=0.1,
+    )
+
+    recovered = magnitudes.apparent_magnitude(
+        cosmology,
+        z,
+        absolute,
+        h=0.67,
+        k_correction=0.3,
+        e_correction=0.1,
+    )
+
+    np.testing.assert_allclose(recovered, m, rtol=1e-12)
+
+
+def test_magnitude_conversions_match_distance_based_conversions(cosmology):
+    """Tests that cosmology-based and distance-based magnitude conversions agree."""
+    from lfkit.cosmology.distances import luminosity_distance_mpc
+
+    z = np.array([0.1, 0.5, 1.0])
+    m = np.array([19.0, 21.0, 23.0])
+    distance = luminosity_distance_mpc(cosmology, z)
+
+    np.testing.assert_allclose(
+        magnitudes.absolute_magnitude(cosmology, z, m),
+        magnitudes.absolute_magnitude_from_luminosity_distance(m, distance),
+        rtol=1e-12,
+    )

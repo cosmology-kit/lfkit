@@ -4,6 +4,52 @@ All notable changes to LFKit will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Backend-independent cosmology utilities supporting Astropy and PyCCL.
+- Dedicated modules for cosmological distances, expansion history,
+  differential comoving volumes, and lookback times.
+- Numerical inversion of the lookback-time relation.
+- Cosmology overview and backend usage documentation.
+- Regression tests covering flat, curved, and evolving dark energy
+  cosmologies with both supported backends.
+- CI configurations with and without the optional PyCCL dependency.
+
+### Changed
+
+- Made Astropy an explicit required dependency.
+- Made PyCCL an optional dependency through the `ccl` installation extra.
+- Migrated photometric magnitude conversions and catalog completeness
+  calculations to the shared cosmology utilities.
+- Consolidated lookback-time calculations and redshift inversion.
+- Changed the default cosmology backend for Poggianti evolution
+  correction remapping from PyCCL to Astropy.
+- Reused shared cosmology fixtures throughout the test suite.
+
+### Fixed
+
+- Comoving volume calculations for cosmologies with nonzero curvature.
+- Distance calculations that depended on the supplied redshift grid.
+- Background calculations that previously assumed a restricted
+  cosmological expansion history.
+- Scalar and multidimensional cosmology input handling.
+
+### Removed
+
+- Redundant cosmology constructors and background integration routines.
+- Duplicate lookback-time inversion helpers.
+
+### Breaking changes
+
+- Removed the legacy `lfkit.cosmo` package and its cosmology constructor.
+  Use Astropy or PyCCL cosmology objects with `lfkit.cosmology` instead.
+- Replaced legacy background cosmology functions with the new
+  backend-independent interface.
+- Users requiring PyCCL must explicitly install the optional
+  `py-lfkit[ccl]` dependency.
+- Poggianti evolution correction remapping may exhibit small numerical
+  differences due to the change in default cosmology backend.
+
 ## [0.7.0] - 2026-11-19
 
 ### Added

@@ -392,7 +392,9 @@ def test_observed_number_density_uses_internal_lf_integral(
         calls["n_m"] = n_m
         return np.array([10.0, 20.0])
 
-    monkeypatch.setattr(cc, "_integrated_number_density", fake_integrated_number_density)
+    monkeypatch.setattr(
+        cc, "_integrated_number_density", fake_integrated_number_density
+    )
 
     result = cc.observed_number_density(
         object(),
@@ -439,7 +441,9 @@ def test_missing_number_density_uses_internal_lf_integral(
         calls["n_m"] = n_m
         return np.array([30.0, 40.0])
 
-    monkeypatch.setattr(cc, "_integrated_number_density", fake_integrated_number_density)
+    monkeypatch.setattr(
+        cc, "_integrated_number_density", fake_integrated_number_density
+    )
 
     result = cc.missing_number_density(
         object(),
@@ -527,7 +531,7 @@ def test_absolute_magnitude_limit_rejects_missing_h() -> None:
     """Tests that missing h raises a clear error."""
     with pytest.raises(
         ValueError,
-        match="h was not provided and could not be read from cosmo_obj",
+        match="Could not read h from the cosmology object",
     ):
         cc.absolute_magnitude_limit(object(), [0.1, 0.2], m_lim=24.5)
 
@@ -541,3 +545,24 @@ def test_absolute_magnitude_limit_rejects_nonfinite_h() -> None:
             m_lim=24.5,
             h=np.inf,
         )
+
+
+def test_absolute_magnitude_limit_with_cosmology(cosmology):
+    """Tests that catalog magnitude limits use the cosmological Hubble parameter."""
+    from lfkit.cosmology.background import dimensionless_hubble_parameter
+    from lfkit.cosmology.distances import luminosity_distance_mpc
+    from lfkit.luminosity_functions.completeness import absolute_magnitude_limit
+
+    z = np.array([0.1, 0.5, 1.0])
+    m_lim = 24.0
+
+    h = dimensionless_hubble_parameter(cosmology)
+    distance = luminosity_distance_mpc(cosmology, z)
+
+    expected = m_lim - 5.0 * np.log10(distance * h) - 25.0
+
+    np.testing.assert_allclose(
+        absolute_magnitude_limit(cosmology, z, m_lim=m_lim),
+        expected,
+        rtol=1e-12,
+    )
