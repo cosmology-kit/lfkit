@@ -4,6 +4,8 @@ All notable changes to LFKit will be documented in this file.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-19
+
 ### Added
 
 - Shared numerical utilities for safe division and exponentiation.
