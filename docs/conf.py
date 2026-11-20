@@ -72,7 +72,7 @@ html_permalinks_icon = "<span>#</span>"
 html_static_path = ["_static"]
 
 html_theme_options = {
-    "source_repository": "https://github.com/cosmo-hub/lfkit/",
+    "source_repository": "https://github.com/cosmology-kit/lfkit/",
     "source_branch": "main",
     "source_directory": "docs/",
 
@@ -82,7 +82,7 @@ html_theme_options = {
     "footer_icons": [
         {
             "name": "GitHub",
-            "url": "https://github.com/cosmo-hub/lfkit",
+            "url": "https://github.com/cosmology-kit/lfkit",
             "html": """
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0"
                      viewBox="0 0 16 16">
@@ -149,7 +149,7 @@ plot_rcparams = {
 # -----------------------------------------------------------------------------
 # Sphinx multiversion
 # -----------------------------------------------------------------------------
-smv_tag_whitelist = r"^v\d+\.\d+\.\d+$"
+smv_tag_whitelist = r"^v(?:0\.(?:[7-9]|[1-9]\d+)|[1-9]\d*\.\d+)\.\d+$"
 smv_branch_whitelist = r"^main$"
 smv_remote_whitelist = r"^origin$"
 smv_released_pattern = r"^refs/tags/v\d+\.\d+\.\d+$"

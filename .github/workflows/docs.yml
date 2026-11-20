@@ -5,13 +5,14 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
-  publish_docs:
+  publish_sphinx_docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v6
         with:
@@ -21,16 +22,16 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install dependencies
-        run: |
-          pip install -e .[docs]
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
 
-      - name: Build docs
-        run: |
-          tox -e docs-releases
-          find docs/_build/html -maxdepth 2 -name index.html -print
+      - name: Install tox
+        run: python -m pip install tox
 
-      - name: Deploy documentation
+      - name: Build release docs
+        run: tox -e docs-releases
+
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           publish_branch: gh-pages
