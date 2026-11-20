@@ -5,7 +5,6 @@ from __future__ import annotations
 import inspect
 
 import numpy as np
-import pyccl as ccl
 import pytest
 
 from lfkit.api._namespaces import expose_lf_function
@@ -23,19 +22,6 @@ class DummyCorrections:
     def e(self, z):
         """Return a simple evolution correction."""
         return np.zeros_like(np.asarray(z, dtype=float)) + 0.2
-
-
-def make_test_cosmology():
-    """Return a small CCL cosmology for API tests."""
-    return ccl.Cosmology(
-        Omega_c=0.25,
-        Omega_b=0.05,
-        h=0.7,
-        sigma8=0.8,
-        n_s=0.96,
-        transfer_function="bbks",
-        matter_power_spectrum="linear",
-    )
 
 
 def test_luminosity_function_initializes_grouped_api_namespaces():
@@ -324,14 +310,14 @@ def test_parameters_evaluates_evolving_schechter_parameters():
     assert np.isfinite(alpha)
 
 
-def test_phi_from_m_evaluates_supported_model():
+def test_phi_from_m_evaluates_supported_model(cosmology):
     """Tests that phi_from_m evaluates a supported model."""
     lf = LuminosityFunction.schechter(
         phi_star=1.0e-3,
         m_star=-20.5,
         alpha=-1.1,
     )
-    cosmo = make_test_cosmology()
+    cosmo = cosmology
 
     result = lf.phi_from_m(
         cosmo,
@@ -344,14 +330,14 @@ def test_phi_from_m_evaluates_supported_model():
     assert np.isfinite(result)
 
 
-def test_phi_from_m_accepts_corrections_object():
+def test_phi_from_m_accepts_corrections_object(cosmology):
     """Tests that phi_from_m accepts correction objects."""
     lf = LuminosityFunction.schechter(
         phi_star=1.0e-3,
         m_star=-20.5,
         alpha=-1.1,
     )
-    cosmo = make_test_cosmology()
+    cosmo = cosmology
 
     result = lf.phi_from_m(
         cosmo,
@@ -467,14 +453,14 @@ def test_integrals_namespace_delegates_to_bound_lf_callable():
     assert np.isfinite(result)
 
 
-def test_completeness_namespace_delegates_to_bound_lf_callable():
+def test_completeness_namespace_delegates_to_bound_lf_callable(cosmology):
     """Tests that completeness delegates to the bound LF callable."""
     lf = LuminosityFunction.schechter(
         phi_star=1.0e-3,
         m_star=-20.5,
         alpha=-1.1,
     )
-    cosmo = make_test_cosmology()
+    cosmo = cosmology
 
     result = lf.completeness.catalog_fraction(
         cosmo,
@@ -491,14 +477,14 @@ def test_completeness_namespace_delegates_to_bound_lf_callable():
     assert 0.0 <= float(result) <= 1.0
 
 
-def test_completeness_absolute_magnitude_limit_is_static_helper():
+def test_completeness_absolute_magnitude_limit_is_static_helper(cosmology):
     """Tests that completeness exposes absolute magnitude limits."""
     lf = LuminosityFunction.schechter(
         phi_star=1.0e-3,
         m_star=-20.5,
         alpha=-1.1,
     )
-    cosmo = make_test_cosmology()
+    cosmo = cosmology
 
     result = lf.completeness.absolute_magnitude_limit(
         cosmo,
@@ -553,13 +539,13 @@ def test_unsupported_model_raises_clear_error():
         lf.phi(-20.0, 0.5)
 
 
-def test_unsupported_phi_from_m_model_raises_clear_error():
+def test_unsupported_phi_from_m_model_raises_clear_error(cosmology):
     """Tests that unsupported phi_from_m models raise clear errors."""
     lf = LuminosityFunction(
         model="not_a_model",
         parameters={},
     )
-    cosmo = make_test_cosmology()
+    cosmo = cosmology
 
     with pytest.raises(ValueError, match="phi_from_m is not defined"):
         lf.phi_from_m(cosmo, 0.5, 24.0, h=0.7)

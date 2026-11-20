@@ -10,14 +10,18 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
+  "astropy",
   "astroquery",
   "numpy>=1.23",
   "scipy>=1.9",
   "kcorrect",
-  "pyccl",
 ]
 
 [project.optional-dependencies]
+
+ccl = [
+  "pyccl",
+]
 
 viz = [
   "matplotlib>=3.7",
@@ -87,14 +91,14 @@ PIP_CACHE_DIR = "{tox_root}/.cache/pip"
 
 [tool.tox.env.py312]
 description = "Run unit tests"
-extras = ["dev"]
+extras = ["dev", "ccl"]
 commands = [
   ["pytest", "-q"],
 ]
 
 [tool.tox.env.cov]
 description = "Coverage report for dev (does not fail)"
-extras = ["dev"]
+extras = ["dev", "ccl"]
 commands = [
   [
     "pytest",
@@ -108,7 +112,7 @@ commands = [
 
 [tool.tox.env.cov-strict]
 description = "Coverage gate (fails if below fail_under)"
-extras = ["dev"]
+extras = ["dev", "ccl"]
 commands = [
   [
     "pytest",
@@ -121,7 +125,7 @@ commands = [
 
 [tool.tox.env.docs]
 description = "Build docs with Sphinx"
-extras = ["docs", "viz"]
+extras = ["docs", "viz", "ccl"]
 commands = [
   [
     "rm",
@@ -142,7 +146,7 @@ commands = [
 
 [tool.tox.env.do]
 description = "Run doctests + html build and open local docs"
-extras = ["docs", "viz"]
+extras = ["docs", "viz", "ccl"]
 allowlist_externals = ["open", "rm"]
 commands = [
   [
@@ -172,7 +176,7 @@ commands = [
 
 [tool.tox.env.docs-releases]
 description = "Build the documentation for lfkit releases using Sphinx"
-extras = ["docs", "viz"]
+extras = ["docs", "viz", "ccl"]
 allowlist_externals = ["cp", "rm"]
 commands = [
   [
