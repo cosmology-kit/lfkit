@@ -18,7 +18,8 @@ from collections.abc import Mapping
 
 import numpy as np
 
-from lfkit.utils.types import FloatArray, ParameterModel, ParameterValue
+from lfkit.utils.evaluators import evaluate_parameter
+from lfkit.utils.types import FloatArray, FloatInput, ParameterModel, ParameterValue
 from lfkit.utils.validators import validate_array
 
 __all__ = [
@@ -41,9 +42,9 @@ __all__ = [
 
 
 def phi_star_constant(
-    z: FloatArray,
+    z: FloatInput,
     *,
-    phi_star: float,
+    phi_star: ParameterValue,
 ) -> FloatArray:
     r"""Return a constant Schechter normalization over redshift.
 
@@ -61,14 +62,19 @@ def phi_star_constant(
         Schechter normalization evaluated at ``z`` with the same shape as ``z``.
     """
     z_arr = validate_array(z, name="z")
-    return np.full_like(z_arr, fill_value=phi_star, dtype=float)
+    return evaluate_parameter(
+        phi_star,
+        z_arr,
+        name="phi_star",
+        domain="non_negative",
+    )
 
 
 def phi_star_linear_p(
-    z: FloatArray,
+    z: FloatInput,
     *,
-    phi_0_star: float,
-    p: float,
+    phi_0_star: ParameterValue,
+    p: ParameterValue,
 ) -> FloatArray:
     r"""Return a Schechter normalization with density evolution.
 
@@ -87,13 +93,29 @@ def phi_star_linear_p(
         Redshift-dependent Schechter normalization evaluated at ``z``.
     """
     z_arr = validate_array(z, name="z")
-    return np.asarray(phi_0_star * 10.0 ** (0.4 * p * z_arr), dtype=float)
+    phi_0_star = evaluate_parameter(
+        phi_0_star,
+        z_arr,
+        name="phi_0_star",
+        domain="non_negative",
+    )
+    p = evaluate_parameter(p, z_arr, name="p")
+
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        values = phi_0_star * 10.0 ** (0.4 * p * z_arr)
+
+    return evaluate_parameter(
+        values,
+        z_arr,
+        name="phi_star",
+        domain="non_negative",
+    )
 
 
 def m_star_constant(
-    z: FloatArray,
+    z: FloatInput,
     *,
-    m_star: float,
+    m_star: ParameterValue,
 ) -> FloatArray:
     r"""Return a constant characteristic magnitude over redshift.
 
@@ -111,15 +133,15 @@ def m_star_constant(
         Characteristic magnitude evaluated at ``z`` with the same shape as ``z``.
     """
     z_arr = validate_array(z, name="z")
-    return np.full_like(z_arr, fill_value=m_star, dtype=float)
+    return evaluate_parameter(m_star, z_arr, name="m_star")
 
 
 def m_star_linear_q(
-    z: FloatArray,
+    z: FloatInput,
     *,
-    m_0_star: float,
-    q: float,
-    z_ref: float = 0.1,
+    m_0_star: ParameterValue,
+    q: ParameterValue,
+    z_ref: ParameterValue = 0.1,
 ) -> FloatArray:
     r"""Return a characteristic magnitude with luminosity evolution.
 
@@ -139,13 +161,20 @@ def m_star_linear_q(
         Redshift-dependent characteristic magnitude evaluated at ``z``.
     """
     z_arr = validate_array(z, name="z")
-    return np.asarray(m_0_star - q * (z_arr - z_ref), dtype=float)
+    m_0_star = evaluate_parameter(m_0_star, z_arr, name="m_0_star")
+    q = evaluate_parameter(q, z_arr, name="q")
+    z_ref = evaluate_parameter(z_ref, z_arr, name="z_ref")
+
+    with np.errstate(over="ignore", invalid="ignore"):
+        values = m_0_star - q * (z_arr - z_ref)
+
+    return evaluate_parameter(values, z_arr, name="m_star")
 
 
 def alpha_constant(
-    z: FloatArray,
+    z: FloatInput,
     *,
-    alpha: float,
+    alpha: ParameterValue,
 ) -> FloatArray:
     r"""Return a constant faint-end slope over redshift.
 
@@ -163,15 +192,15 @@ def alpha_constant(
         Faint-end slope evaluated at ``z`` with the same shape as ``z``.
     """
     z_arr = validate_array(z, name="z")
-    return np.full_like(z_arr, fill_value=alpha, dtype=float)
+    return evaluate_parameter(alpha, z_arr, name="alpha")
 
 
 def alpha_linear(
-    z: FloatArray,
+    z: FloatInput,
     *,
-    alpha_0: float,
-    alpha_1: float,
-    z_ref: float = 0.1,
+    alpha_0: ParameterValue,
+    alpha_1: ParameterValue,
+    z_ref: ParameterValue = 0.1,
 ) -> FloatArray:
     r"""Return a faint-end slope that varies linearly with redshift.
 
@@ -191,7 +220,14 @@ def alpha_linear(
         Redshift-dependent faint-end slope evaluated at ``z``.
     """
     z_arr = validate_array(z, name="z")
-    return np.asarray(alpha_0 + alpha_1 * (z_arr - z_ref), dtype=float)
+    alpha_0 = evaluate_parameter(alpha_0, z_arr, name="alpha_0")
+    alpha_1 = evaluate_parameter(alpha_1, z_arr, name="alpha_1")
+    z_ref = evaluate_parameter(z_ref, z_arr, name="z_ref")
+
+    with np.errstate(over="ignore", invalid="ignore"):
+        values = alpha_0 + alpha_1 * (z_arr - z_ref)
+
+    return evaluate_parameter(values, z_arr, name="alpha")
 
 
 def get_parameter_model(
@@ -338,7 +374,7 @@ def register_alpha_model(
 
 
 def evaluate_lf_parameters(
-    z: FloatArray,
+    z: FloatInput,
     *,
     phi_model: str = "linear_p",
     phi_kwargs: Mapping[str, ParameterValue] | None = None,
@@ -392,9 +428,22 @@ def evaluate_lf_parameters(
         model_kind="alpha_model",
     )
 
-    phi_star = phi_fn(z_arr, **phi_kwargs_dict)
-    m_star = m_star_fn(z_arr, **m_star_kwargs_dict)
-    alpha = alpha_fn(z_arr, **alpha_kwargs_dict)
+    phi_star = evaluate_parameter(
+        phi_fn(z_arr, **phi_kwargs_dict),
+        z_arr,
+        name="phi_star",
+        domain="non_negative",
+    )
+    m_star = evaluate_parameter(
+        m_star_fn(z_arr, **m_star_kwargs_dict),
+        z_arr,
+        name="m_star",
+    )
+    alpha = evaluate_parameter(
+        alpha_fn(z_arr, **alpha_kwargs_dict),
+        z_arr,
+        name="alpha",
+    )
 
     return phi_star, m_star, alpha
 

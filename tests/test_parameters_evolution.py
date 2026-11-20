@@ -11,13 +11,13 @@ from lfkit.parameters.evolution import (
     PHI_STAR_MODELS,
     alpha_constant,
     alpha_linear,
+    available_lf_parameter_models,
     evaluate_lf_parameters,
     get_parameter_model,
     m_star_constant,
     m_star_linear_q,
     phi_star_constant,
     phi_star_linear_p,
-    available_lf_parameter_models,
     register_alpha_model,
     register_m_star_model,
     register_phi_star_model,
@@ -515,3 +515,207 @@ def test_available_lf_parameter_models_includes_registered_custom_model() -> Non
         assert "zzz_custom_phi_test" in result["phi_star"]
     finally:
         PHI_STAR_MODELS.pop("zzz_custom_phi_test", None)
+
+
+@pytest.mark.parametrize(
+    "model,kwargs,expected",
+    [
+        (phi_star_constant, {"phi_star": 1e-3}, 1e-3),
+        (m_star_constant, {"m_star": -20.0}, -20.0),
+        (alpha_constant, {"alpha": -1.2}, -1.2),
+    ],
+)
+def test_constant_models_multidimensional_input(model, kwargs, expected):
+    """Tests that constant models preserve multidimensional redshift shapes."""
+    z = np.arange(6, dtype=float).reshape(2, 3)
+
+    result = model(z, **kwargs)
+
+    assert result.shape == z.shape
+    assert result.dtype == np.float64
+    np.testing.assert_allclose(result, expected)
+
+
+@pytest.mark.parametrize(
+    "model,parameter,values",
+    [
+        (phi_star_constant, "phi_star", [1e-3, 2e-3, 3e-3]),
+        (m_star_constant, "m_star", [-20.0, -21.0, -22.0]),
+        (alpha_constant, "alpha", [-1.0, -1.2, -1.4]),
+    ],
+)
+def test_constant_models_broadcast_parameter_arrays(model, parameter, values):
+    """Tests that constant models accept broadcastable parameter arrays."""
+    z = np.zeros((2, 3))
+
+    result = model(z, **{parameter: values})
+
+    np.testing.assert_allclose(result, np.broadcast_to(values, z.shape))
+
+
+@pytest.mark.parametrize(
+    "model,kwargs",
+    [
+        (phi_star_constant, {"phi_star": np.nan}),
+        (m_star_constant, {"m_star": np.inf}),
+        (alpha_constant, {"alpha": -np.inf}),
+        (phi_star_linear_p, {"phi_0_star": np.nan, "p": 1.0}),
+        (phi_star_linear_p, {"phi_0_star": 1e-3, "p": np.inf}),
+        (m_star_linear_q, {"m_0_star": np.nan, "q": 1.0}),
+        (m_star_linear_q, {"m_0_star": -20.0, "q": np.inf}),
+        (m_star_linear_q, {"m_0_star": -20.0, "q": 1.0, "z_ref": np.nan}),
+        (alpha_linear, {"alpha_0": np.nan, "alpha_1": 0.1}),
+        (alpha_linear, {"alpha_0": -1.0, "alpha_1": np.inf}),
+        (alpha_linear, {"alpha_0": -1.0, "alpha_1": 0.1, "z_ref": np.nan}),
+    ],
+)
+def test_evolution_models_reject_nonfinite_parameters(model, kwargs):
+    """Tests that evolution models reject non-finite parameter values."""
+    with pytest.raises(ValueError, match="NaN or infinite"):
+        model([0.0, 0.5, 1.0], **kwargs)
+
+
+@pytest.mark.parametrize(
+    "model,kwargs",
+    [
+        (phi_star_constant, {"phi_star": -1e-3}),
+        (phi_star_linear_p, {"phi_0_star": -1e-3, "p": 1.0}),
+    ],
+)
+def test_density_evolution_rejects_negative_normalization(model, kwargs):
+    """Tests that density evolution rejects negative normalization."""
+    with pytest.raises(ValueError, match="non-negative"):
+        model([0.0, 0.5, 1.0], **kwargs)
+
+
+@pytest.mark.parametrize(
+    "model,kwargs",
+    [
+        (phi_star_constant, {"phi_star": 0.0}),
+        (phi_star_linear_p, {"phi_0_star": 0.0, "p": 1.0}),
+    ],
+)
+def test_density_evolution_accepts_zero_normalization(model, kwargs):
+    """Tests that density evolution accepts zero normalization."""
+    result = model([0.0, 0.5, 1.0], **kwargs)
+
+    np.testing.assert_array_equal(result, np.zeros(3))
+
+
+@pytest.mark.parametrize(
+    "model",
+    [phi_star_constant, m_star_constant, alpha_constant],
+)
+def test_constant_models_reject_incompatible_shape(model):
+    """Tests that constant models reject incompatible parameter shapes."""
+    parameter = model.__name__.removesuffix("_constant")
+
+    with pytest.raises(ValueError, match="broadcastable"):
+        model(np.zeros(3), **{parameter: np.ones(4)})
+
+
+def test_phi_star_linear_p_broadcasts_coefficients():
+    """Tests that density evolution broadcasts array-valued coefficients."""
+    z = np.array([[0.0], [0.5], [1.0]]) + np.zeros((1, 2))
+    phi_0_star = np.array([1e-3, 2e-3])
+    p = np.array([1.0, -1.0])
+
+    result = phi_star_linear_p(z, phi_0_star=phi_0_star, p=p)
+    expected = phi_0_star * 10.0 ** (0.4 * p * z)
+
+    np.testing.assert_allclose(result, expected)
+
+
+def test_m_star_linear_q_broadcasts_coefficients():
+    """Tests that luminosity evolution broadcasts array-valued coefficients."""
+    z = np.array([[0.0, 0.5], [1.0, 1.5]])
+    m_0_star = np.array([-20.0, -21.0])
+    q = np.array([1.0, -0.5])
+
+    result = m_star_linear_q(z, m_0_star=m_0_star, q=q)
+    expected = m_0_star - q * (z - 0.1)
+
+    np.testing.assert_allclose(result, expected)
+
+
+def test_alpha_linear_broadcasts_coefficients():
+    """Tests that slope evolution broadcasts array-valued coefficients."""
+    z = np.array([[0.0, 0.5], [1.0, 1.5]])
+    alpha_0 = np.array([-1.0, -1.5])
+    alpha_1 = np.array([0.1, -0.2])
+
+    result = alpha_linear(z, alpha_0=alpha_0, alpha_1=alpha_1)
+    expected = alpha_0 + alpha_1 * (z - 0.1)
+
+    np.testing.assert_allclose(result, expected)
+
+
+@pytest.mark.parametrize(
+    "model,kwargs",
+    [
+        (phi_star_linear_p, {"phi_0_star": 1e-3, "p": 1e308}),
+        (m_star_linear_q, {"m_0_star": -20.0, "q": 1e308}),
+        (alpha_linear, {"alpha_0": -1.0, "alpha_1": 1e308}),
+    ],
+)
+def test_evolution_models_reject_nonfinite_results(model, kwargs):
+    """Tests that evolution models reject numerical overflow."""
+    with pytest.raises(ValueError, match="NaN or infinite"):
+        model([10.0], **kwargs)
+
+
+def test_evaluate_lf_parameters_broadcasts_custom_scalar_models(monkeypatch):
+    """Tests that registered scalar outputs broadcast over redshift."""
+    monkeypatch.setitem(PHI_STAR_MODELS, "scalar", lambda z: 1e-3)
+    monkeypatch.setitem(M_STAR_MODELS, "scalar", lambda z: -20.0)
+    monkeypatch.setitem(ALPHA_MODELS, "scalar", lambda z: -1.2)
+
+    z = np.zeros((2, 3))
+
+    phi_star, m_star, alpha = evaluate_lf_parameters(
+        z,
+        phi_model="scalar",
+        m_star_model="scalar",
+        alpha_model="scalar",
+    )
+
+    for result, expected in (
+        (phi_star, 1e-3),
+        (m_star, -20.0),
+        (alpha, -1.2),
+    ):
+        assert result.shape == z.shape
+        assert result.dtype == np.float64
+        np.testing.assert_allclose(result, expected)
+
+
+@pytest.mark.parametrize(
+    "registry,model_kind,output,error",
+    [
+        (PHI_STAR_MODELS, "phi_model", -1.0, "non-negative"),
+        (PHI_STAR_MODELS, "phi_model", np.nan, "NaN or infinite"),
+        (M_STAR_MODELS, "m_star_model", np.inf, "NaN or infinite"),
+        (ALPHA_MODELS, "alpha_model", np.nan, "NaN or infinite"),
+        (PHI_STAR_MODELS, "phi_model", np.ones(4), "broadcastable"),
+        (M_STAR_MODELS, "m_star_model", np.ones(4), "broadcastable"),
+        (ALPHA_MODELS, "alpha_model", np.ones(4), "broadcastable"),
+    ],
+)
+def test_evaluate_lf_parameters_rejects_invalid_custom_outputs(
+    monkeypatch, registry, model_kind, output, error
+):
+    """Tests that registered models must return valid parameter values."""
+    monkeypatch.setitem(registry, "invalid_output", lambda z, **kwargs: output)
+
+    kwargs = {
+        "phi_model": "constant",
+        "phi_kwargs": {"phi_star": 1e-3},
+        "m_star_model": "constant",
+        "m_star_kwargs": {"m_star": -20.0},
+        "alpha_model": "constant",
+        "alpha_kwargs": {"alpha": -1.2},
+    }
+    kwargs[model_kind] = "invalid_output"
+
+    with pytest.raises(ValueError, match=error):
+        evaluate_lf_parameters(np.zeros(3), **kwargs)
