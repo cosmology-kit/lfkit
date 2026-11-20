@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="lfkit.utils.download_poggianti97_data" href="lfkit.utils.download_poggianti97_data.html"><link rel="prev" title="lfkit.photometry.magnitudes" href="lfkit.photometry.magnitudes.html">
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="lfkit.utils.evaluators" href="lfkit.utils.evaluators.html"><link rel="prev" title="lfkit.photometry.magnitudes" href="lfkit.photometry.magnitudes.html">
         <link rel="canonical" href="https://cosmology-kit.github.io/lfkit/api/generated/lfkit.utils.html">
         <link rel="prefetch" href="../../_static/logos/lfkit_logo-icon.png" as="image">
         <link rel="prefetch" href="../../_static/logos/lfkit_logo-icon.png" as="image">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=03637586" />
     
@@ -287,16 +287,17 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="lfkit.photometry.html">lfkit.photometry</a><input aria-label="Toggle navigation of lfkit.photometry" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.fluxes.html">lfkit.photometry.fluxes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.luminosities.html">lfkit.photometry.luminosities</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.magnitudes.html">lfkit.photometry.magnitudes</a></li>
 </ul>
 </li>
 <li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">lfkit.utils</a><input aria-label="Toggle navigation of lfkit.utils" checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="lfkit.utils.download_poggianti97_data.html">lfkit.utils.download_poggianti97_data</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.evaluators.html">lfkit.utils.evaluators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.integrators.html">lfkit.utils.integrators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.interpolation.html">lfkit.utils.interpolation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.io.html">lfkit.utils.io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.utils.numerics.html">lfkit.utils.numerics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.types.html">lfkit.utils.types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.units.html">lfkit.utils.units</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.validators.html">lfkit.utils.validators</a></li>
@@ -329,12 +330,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/blob/main/docs/api/generated/lfkit.utils.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/blob/main/docs/api/generated/lfkit.utils.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/edit/main/docs/api/generated/lfkit.utils.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/edit/main/docs/api/generated/lfkit.utils.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -357,26 +358,26 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.download_poggianti97_data.html#module-lfkit.utils.download_poggianti97_data" title="lfkit.utils.download_poggianti97_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download_poggianti97_data</span></code></a></p></td>
-<td><p>Download Poggianti (1997) correction tables from VizieR.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.evaluators.html#module-lfkit.utils.evaluators" title="lfkit.utils.evaluators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluators</span></code></a></p></td>
+<td><p>Numerical parameter evaluation utilities.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="lfkit.utils.evaluators.html#module-lfkit.utils.evaluators" title="lfkit.utils.evaluators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluators</span></code></a></p></td>
-<td><p>Callable evaluation utilities.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.integrators.html#module-lfkit.utils.integrators" title="lfkit.utils.integrators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integrators</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="lfkit.utils.integrators.html#module-lfkit.utils.integrators" title="lfkit.utils.integrators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integrators</span></code></a></p></td>
 <td><p>Numerical integration utilities.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="lfkit.utils.interpolation.html#module-lfkit.utils.interpolation" title="lfkit.utils.interpolation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolation</span></code></a></p></td>
-<td><p>Interpolation utilities for 1D tabulated curves.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.interpolation.html#module-lfkit.utils.interpolation" title="lfkit.utils.interpolation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolation</span></code></a></p></td>
+<td><p>Interpolation utilities for one-dimensional tabulated curves.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.io.html#module-lfkit.utils.io" title="lfkit.utils.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a></p></td>
-<td><p>I/O utilities for packaged Poggianti (1997) correction tables.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="lfkit.utils.io.html#module-lfkit.utils.io" title="lfkit.utils.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a></p></td>
+<td><p>Generic file and packaged-resource I/O utilities.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.numerics.html#module-lfkit.utils.numerics" title="lfkit.utils.numerics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numerics</span></code></a></p></td>
+<td><p>Shared numerical utilities.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="lfkit.utils.types.html#module-lfkit.utils.types" title="lfkit.utils.types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">types</span></code></a></p></td>
-<td><p>Shared type aliases for LFKit.</p></td>
+<td><p>Shared typing aliases for LFKit.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="lfkit.utils.units.html#module-lfkit.utils.units" title="lfkit.utils.units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code></a></p></td>
-<td><p>Unit conversion utilities used across LFKit.</p></td>
+<td><p>Physical unit conversion utilities.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="lfkit.utils.validators.html#module-lfkit.utils.validators" title="lfkit.utils.validators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validators</span></code></a></p></td>
 <td><p>Validation utilities.</p></td>
@@ -391,12 +392,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="lfkit.utils.download_poggianti97_data.html">
+          <a class="next-page" href="lfkit.utils.evaluators.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">lfkit.utils.download_poggianti97_data</div>
+                <div class="title">lfkit.utils.evaluators</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -424,7 +425,7 @@
           </div>
           <div class="right-details">
             <div class="icons">
-              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmo-hub/lfkit" aria-label="GitHub">
+              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmology-kit/lfkit" aria-label="GitHub">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0"
                      viewBox="0 0 16 16">
                      style="color: #FE5019;">
@@ -466,6 +467,6 @@
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f16c4c56"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     </body>
 </html>

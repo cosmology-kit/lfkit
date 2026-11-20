@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=03637586" />
     
@@ -287,16 +287,17 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="lfkit.photometry.html">lfkit.photometry</a><input aria-label="Toggle navigation of lfkit.photometry" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.fluxes.html">lfkit.photometry.fluxes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.luminosities.html">lfkit.photometry.luminosities</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.magnitudes.html">lfkit.photometry.magnitudes</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="lfkit.utils.html">lfkit.utils</a><input aria-label="Toggle navigation of lfkit.utils" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="lfkit.utils.download_poggianti97_data.html">lfkit.utils.download_poggianti97_data</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.evaluators.html">lfkit.utils.evaluators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.integrators.html">lfkit.utils.integrators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.interpolation.html">lfkit.utils.interpolation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.io.html">lfkit.utils.io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.utils.numerics.html">lfkit.utils.numerics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.types.html">lfkit.utils.types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.units.html">lfkit.utils.units</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.validators.html">lfkit.utils.validators</a></li>
@@ -329,12 +330,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/blob/main/docs/api/generated/lfkit.corrections.kcorrect_grids.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/blob/main/docs/api/generated/lfkit.corrections.kcorrect_grids.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/edit/main/docs/api/generated/lfkit.corrections.kcorrect_grids.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/edit/main/docs/api/generated/lfkit.corrections.kcorrect_grids.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -382,6 +383,12 @@ labels for different template mixtures used to generate k(z) curves.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kcorr_interpolators</span></code>(pkg, *[, method, ...])</p></td>
 <td><p>Create interpolation functions for k(z).</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_kcorr_package</span></code>(path)</p></td>
+<td><p>Load a compressed K-correction grid package without pickle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_kcorr_package</span></code>(pkg, path)</p></td>
+<td><p>Save a K-correction grid package as a compressed NPZ file.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -425,7 +432,7 @@ labels for different template mixtures used to generate k(z) curves.</p>
           </div>
           <div class="right-details">
             <div class="icons">
-              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmo-hub/lfkit" aria-label="GitHub">
+              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmology-kit/lfkit" aria-label="GitHub">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0"
                      viewBox="0 0 16 16">
                      style="color: #FE5019;">
@@ -467,6 +474,6 @@ labels for different template mixtures used to generate k(z) curves.</p>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f16c4c56"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     </body>
 </html>

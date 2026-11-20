@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="lfkit.utils.integrators" href="lfkit.utils.integrators.html"><link rel="prev" title="lfkit.utils.download_poggianti97_data" href="lfkit.utils.download_poggianti97_data.html">
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="lfkit.utils.integrators" href="lfkit.utils.integrators.html"><link rel="prev" title="lfkit.utils" href="lfkit.utils.html">
         <link rel="canonical" href="https://cosmology-kit.github.io/lfkit/api/generated/lfkit.utils.evaluators.html">
         <link rel="prefetch" href="../../_static/logos/lfkit_logo-icon.png" as="image">
         <link rel="prefetch" href="../../_static/logos/lfkit_logo-icon.png" as="image">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=03637586" />
     
@@ -287,16 +287,17 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="lfkit.photometry.html">lfkit.photometry</a><input aria-label="Toggle navigation of lfkit.photometry" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.fluxes.html">lfkit.photometry.fluxes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.luminosities.html">lfkit.photometry.luminosities</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.photometry.magnitudes.html">lfkit.photometry.magnitudes</a></li>
 </ul>
 </li>
 <li class="toctree-l3 current has-children"><a class="reference internal" href="lfkit.utils.html">lfkit.utils</a><input aria-label="Toggle navigation of lfkit.utils" checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="lfkit.utils.download_poggianti97_data.html">lfkit.utils.download_poggianti97_data</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">lfkit.utils.evaluators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.integrators.html">lfkit.utils.integrators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.interpolation.html">lfkit.utils.interpolation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.io.html">lfkit.utils.io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lfkit.utils.numerics.html">lfkit.utils.numerics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.types.html">lfkit.utils.types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.units.html">lfkit.utils.units</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lfkit.utils.validators.html">lfkit.utils.validators</a></li>
@@ -329,12 +330,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/blob/main/docs/api/generated/lfkit.utils.evaluators.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/blob/main/docs/api/generated/lfkit.utils.evaluators.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/edit/main/docs/api/generated/lfkit.utils.evaluators.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/edit/main/docs/api/generated/lfkit.utils.evaluators.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -353,25 +354,13 @@
         <article role="main" id="furo-main-content">
           <section id="module-lfkit.utils.evaluators">
 <span id="lfkit-utils-evaluators"></span><h1>lfkit.utils.evaluators<a class="headerlink" href="#module-lfkit.utils.evaluators" title="Link to this heading"><span>#</span></a></h1>
-<p>Callable evaluation utilities.</p>
+<p>Numerical parameter evaluation utilities.</p>
 <p class="rubric">Functions</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_lf_on_grid</span></code>(lf, *, m_grid, z_grid)</p></td>
-<td><p>Return LF values evaluated on a magnitude-redshift grid.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_non_negative_redshift_callable</span></code>(fn, ...)</p></td>
-<td><p>Evaluate a redshift-dependent callable that must be non-negative.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_optional_redshift_callable</span></code>(fn, z, ...)</p></td>
-<td><p>Evaluate an optional redshift-dependent callable.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_positive_redshift_callable</span></code>(fn, z, ...)</p></td>
-<td><p>Evaluate a redshift-dependent callable that must be positive.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_weight_on_grid</span></code>(weight_fn, *, ...)</p></td>
-<td><p>Return finite non-negative weight values on a magnitude-redshift grid.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_parameter</span></code>(parameter, *coordinates)</p></td>
+<td><p>Evaluate a numerical parameter or callable on broadcastable coordinates.</p></td>
 </tr>
 </tbody>
 </table>
@@ -392,14 +381,14 @@
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="lfkit.utils.download_poggianti97_data.html">
+          <a class="prev-page" href="lfkit.utils.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">lfkit.utils.download_poggianti97_data</div>
+                <div class="title">lfkit.utils</div>
                 
               </div>
             </a>
@@ -416,7 +405,7 @@
           </div>
           <div class="right-details">
             <div class="icons">
-              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmo-hub/lfkit" aria-label="GitHub">
+              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmology-kit/lfkit" aria-label="GitHub">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0"
                      viewBox="0 0 16 16">
                      style="color: #FE5019;">
@@ -458,6 +447,6 @@
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f16c4c56"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     </body>
 </html>

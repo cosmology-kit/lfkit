@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=03637586" />
     
@@ -287,16 +287,17 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.photometry.html">lfkit.photometry</a><input aria-label="Toggle navigation of lfkit.photometry" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.photometry.fluxes.html">lfkit.photometry.fluxes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.photometry.luminosities.html">lfkit.photometry.luminosities</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.photometry.magnitudes.html">lfkit.photometry.magnitudes</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.utils.html">lfkit.utils</a><input aria-label="Toggle navigation of lfkit.utils" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.download_poggianti97_data.html">lfkit.utils.download_poggianti97_data</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.evaluators.html">lfkit.utils.evaluators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.integrators.html">lfkit.utils.integrators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.interpolation.html">lfkit.utils.interpolation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.io.html">lfkit.utils.io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.numerics.html">lfkit.utils.numerics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.types.html">lfkit.utils.types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.units.html">lfkit.utils.units</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.validators.html">lfkit.utils.validators</a></li>
@@ -329,12 +330,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/blob/main/docs/examples/poggianti_examples.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/blob/main/docs/examples/poggianti_examples.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/cosmo-hub/lfkit/edit/main/docs/examples/poggianti_examples.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/cosmology-kit/lfkit/edit/main/docs/examples/poggianti_examples.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -369,14 +370,14 @@ galaxy type.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lfkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Corrections</span>
 
 <span class="c1"># Build a Poggianti corrections object</span>
-<span class="n">corr</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">)</span>
+<span class="n">corr</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">"V"</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">"E"</span><span class="p">)</span>
 
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
 <span class="n">k</span>  <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="n">e</span>  <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">e</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="n">ke</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">ke</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
-<span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;cmr.guppy&quot;</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="s2">"cmr.guppy"</span>
 <span class="n">c_red</span>    <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">c_blue</span>   <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">c_purple</span> <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
@@ -384,17 +385,17 @@ galaxy type.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">))</span>
 <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fs</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span>    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$k(z)$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_blue</span><span class="p">,</span>   <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$e(z)$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ke</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_purple</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$k(z)+e(z)$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Redshift $z$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Correction [mag]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Poggianti (1997): $k(z)$ and $e(z)$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span>    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$k(z)$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_blue</span><span class="p">,</span>   <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$e(z)$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ke</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_purple</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$k(z)+e(z)$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Redshift $z$"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Correction [mag]"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Poggianti (1997): $k(z)$ and $e(z)$"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/1c10b016d1750bcb4dc2457c448ecf96/poggianti_examples-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/84632ae89333f7b4eb8c3e368aab04da/poggianti_examples-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/poggianti_examples-1.png"><img alt="../_images/poggianti_examples-1.png" class="plot-directive" src="../_images/poggianti_examples-1.png" style="width: 520px;" />
 </a>
@@ -411,10 +412,10 @@ galaxy type.</p>
 
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
 
-<span class="n">corr_E</span>  <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">)</span>
-<span class="n">corr_Sc</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">&quot;Sc&quot;</span><span class="p">)</span>
+<span class="n">corr_E</span>  <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">"V"</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">"E"</span><span class="p">)</span>
+<span class="n">corr_Sc</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">"V"</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">"Sc"</span><span class="p">)</span>
 
-<span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;cmr.guppy&quot;</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="s2">"cmr.guppy"</span>
 <span class="n">c_red</span>  <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">c_blue</span> <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
 
@@ -422,17 +423,17 @@ galaxy type.</p>
 <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fs</span> <span class="o">=</span> <span class="mi">15</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">corr_E</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$k(z): E$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">corr_Sc</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_blue</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$k(z): Sc4&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">corr_E</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$k(z): E$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">corr_Sc</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_blue</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$k(z): Sc4"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Redshift $z$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$k$-correction [mag]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Poggianti (1997): galaxy-type dependence&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Redshift $z$"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"$k$-correction [mag]"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Poggianti (1997): galaxy-type dependence"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/faa52edf83f846527d7018ac4a76d429/poggianti_examples-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/b85d8a84c26535377a8b80f4060c0e90/poggianti_examples-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/poggianti_examples-2.png"><img alt="../_images/poggianti_examples-2.png" class="plot-directive" src="../_images/poggianti_examples-2.png" style="width: 520px;" />
 </a>
@@ -448,9 +449,9 @@ galaxy type.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lfkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Corrections</span>
 
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
-<span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">]</span>
+<span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"V"</span><span class="p">,</span> <span class="s2">"R"</span><span class="p">,</span> <span class="s2">"I"</span><span class="p">]</span>
 
-<span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;cmr.guppy&quot;</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="s2">"cmr.guppy"</span>
 <span class="n">cols</span> <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="p">),</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">))</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">))</span>
@@ -458,17 +459,17 @@ galaxy type.</p>
 <span class="n">fs</span> <span class="o">=</span> <span class="mi">15</span>
 
 <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bands</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
-    <span class="n">corr</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">,</span> <span class="n">gal_type</span><span class="o">=</span><span class="s2">"E"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"$</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">$"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Redshift $z$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$k$-correction [mag]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Poggianti (1997): band dependence (E)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Redshift $z$"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"$k$-correction [mag]"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Poggianti (1997): band dependence (E)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/e45c154357da5b815564d22215aa8271/poggianti_examples-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/9a6af129d93d9ff48193c7173924ea0f/poggianti_examples-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/poggianti_examples-3.png"><img alt="../_images/poggianti_examples-3.png" class="plot-directive" src="../_images/poggianti_examples-3.png" style="width: 620px;" />
 </a>
@@ -488,40 +489,40 @@ for the same nominal output band.</p>
 
 <span class="c1"># Poggianti curve</span>
 <span class="n">pog</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">poggianti</span><span class="p">(</span>
-    <span class="n">band</span><span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">,</span>
-    <span class="n">gal_type</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;pchip&quot;</span><span class="p">,</span>
+    <span class="n">band</span><span class="o">=</span><span class="s2">"V"</span><span class="p">,</span>
+    <span class="n">gal_type</span><span class="o">=</span><span class="s2">"E"</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"pchip"</span><span class="p">,</span>
     <span class="n">extrapolate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">k_pog</span> <span class="o">=</span> <span class="n">pog</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
 <span class="c1"># kcorrect curve (anchored by a rest-frame color)</span>
 <span class="n">kc</span> <span class="o">=</span> <span class="n">Corrections</span><span class="o">.</span><span class="n">kcorrect</span><span class="p">(</span>
-    <span class="n">response_out</span><span class="o">=</span><span class="s2">&quot;bessell_V&quot;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;bessell_B&quot;</span><span class="p">,</span> <span class="s2">&quot;bessell_V&quot;</span><span class="p">),</span>
+    <span class="n">response_out</span><span class="o">=</span><span class="s2">"bessell_V"</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="s2">"bessell_B"</span><span class="p">,</span> <span class="s2">"bessell_V"</span><span class="p">),</span>
     <span class="n">color_value</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
     <span class="n">anchor_z0</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">k_kc</span> <span class="o">=</span> <span class="n">kc</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
-<span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;cmr.guppy&quot;</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="s2">"cmr.guppy"</span>
 <span class="n">c_red</span>  <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">take_cmap_colors</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cmap_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">))</span>
 <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fs</span> <span class="o">=</span> <span class="mi">15</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k_pog</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Poggianti (1997)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k_kc</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;kcorrect (anchored)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k_pog</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">"Poggianti (1997)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k_kc</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"-"</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="n">c_red</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"kcorrect (anchored)"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Redshift $z$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$k$-correction [mag]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Poggianti vs kcorrect (example)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Redshift $z$"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"$k$-correction [mag]"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Poggianti vs kcorrect (example)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/f4bff14057b23d2b2122a7a756e9de1a/poggianti_examples-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/a95b9246a1d58e9812120a52a44a4ec3/poggianti_examples-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/poggianti_examples-4.png"><img alt="../_images/poggianti_examples-4.png" class="plot-directive" src="../_images/poggianti_examples-4.png" style="width: 620px;" />
 </a>
@@ -533,10 +534,10 @@ for the same nominal output band.</p>
 directly from the Poggianti backend.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">lfkit.corrections.poggianti1997</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pogg</span>
 
-<span class="n">z_k</span><span class="p">,</span> <span class="n">kcorr</span><span class="p">,</span> <span class="n">z_e</span><span class="p">,</span> <span class="n">ecorr</span> <span class="o">=</span> <span class="n">pogg</span><span class="o">.</span><span class="n">load_poggianti1997_tables</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">sed</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">)</span>
+<span class="n">z_k</span><span class="p">,</span> <span class="n">kcorr</span><span class="p">,</span> <span class="n">z_e</span><span class="p">,</span> <span class="n">ecorr</span> <span class="o">=</span> <span class="n">pogg</span><span class="o">.</span><span class="n">load_poggianti1997_tables</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="s2">"V"</span><span class="p">,</span> <span class="n">sed</span><span class="o">=</span><span class="s2">"E"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;K table:&quot;</span><span class="p">,</span> <span class="n">z_k</span><span class="p">[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">kcorr</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;E table:&quot;</span><span class="p">,</span> <span class="n">z_e</span><span class="p">[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">ecorr</span><span class="p">[:</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"K table:"</span><span class="p">,</span> <span class="n">z_k</span><span class="p">[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">kcorr</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"E table:"</span><span class="p">,</span> <span class="n">z_e</span><span class="p">[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">ecorr</span><span class="p">[:</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -580,7 +581,7 @@ directly from the Poggianti backend.</p>
           </div>
           <div class="right-details">
             <div class="icons">
-              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmo-hub/lfkit" aria-label="GitHub">
+              <a class="muted-link lfkit-github-icon" href="https://github.com/cosmology-kit/lfkit" aria-label="GitHub">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0"
                      viewBox="0 0 16 16">
                      style="color: #FE5019;">
@@ -645,7 +646,7 @@ directly from the Poggianti backend.</p>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f16c4c56"></script>
-    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../_static/design-tabs.js?v=fcb327ea"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>
