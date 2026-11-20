@@ -39,7 +39,8 @@ def mag_to_maggies(m_ab: FloatInput) -> FloatArray:
         f = 1 maggie.
     """
     m = np.asarray(m_ab, dtype=float)
-    return 10.0 ** (-0.4 * m)
+    with np.errstate(over="ignore", under="ignore"):
+        return np.asarray(10.0 ** (-0.4 * m), dtype=float)
 
 
 def maggies_to_mag(maggies: FloatInput, *, floor: float = 1e-300) -> FloatArray:
@@ -47,14 +48,21 @@ def maggies_to_mag(maggies: FloatInput, *, floor: float = 1e-300) -> FloatArray:
 
     Args:
         maggies: Fluxes in maggies.
-        floor: Minimum value to avoid log(0).
+        floor: Finite positive minimum flux used to avoid log(0).
 
     Returns:
-        Magnitudes in AB system.
+        Magnitudes in the AB system.
+
+    Raises:
+        ValueError: If floor is non-finite or non-positive.
     """
-    m = np.asarray(maggies, dtype=float)
-    m = np.maximum(m, float(floor))
-    return -2.5 * np.log10(m)
+    if not np.isfinite(floor) or floor <= 0.0:
+        raise ValueError("floor must be finite and strictly positive.")
+
+    flux = np.asarray(maggies, dtype=float)
+    flux = np.maximum(flux, floor)
+
+    return np.asarray(-2.5 * np.log10(flux), dtype=float)
 
 
 def magerr_to_ivar_maggies(m_ab: FloatInput, sigma_m: FloatInput) -> FloatArray:
@@ -84,18 +92,30 @@ def magerr_to_ivar_maggies(m_ab: FloatInput, sigma_m: FloatInput) -> FloatArray:
     Returns:
         Inverse variance of the fluxes in maggies (1 / sigma_f**2).
         Entries are set to zero where the propagated uncertainty is
-        non-finite or non-positive.
+        non-finite or non-positive, or the inverse variance is non-finite.
 
     Notes:
         Uses linear (first-order) error propagation and assumes small
         magnitude errors. No covariance between bands is included.
-        Non-finite or zero uncertainties yield zero inverse variance.
+        Non-finite or non-positive uncertainties yield zero inverse
+        variance. Unrepresentable inverse variances are also masked.
     """
-    m = np.asarray(m_ab, dtype=float)
+    f = mag_to_maggies(m_ab)
     sm = np.asarray(sigma_m, dtype=float)
-    f = mag_to_maggies(m)
-    sigma_f = (0.4 * np.log(10.0)) * f * sm
-    ivar = np.zeros_like(sigma_f)
-    ok = np.isfinite(sigma_f) & (sigma_f > 0)
-    ivar[ok] = 1.0 / (sigma_f[ok] ** 2)
-    return ivar
+
+    with np.errstate(over="ignore", under="ignore", invalid="ignore", divide="ignore"):
+        sigma_f = (0.4 * np.log(10.0)) * f * sm
+        ivar = np.zeros_like(sigma_f)
+        valid = np.isfinite(sigma_f) & (sigma_f > 0.0)
+
+        ivar[valid] = 1.0 / (sigma_f[valid] ** 2)
+
+        # Recover representable inverse variances when squaring the
+        # propagated uncertainty overflows.
+        recover = valid & (ivar == 0.0)
+        ivar[recover] = (1.0 / sigma_f[recover]) ** 2
+
+    return np.asarray(
+        np.where(np.isfinite(ivar), ivar, 0.0),
+        dtype=float,
+    )

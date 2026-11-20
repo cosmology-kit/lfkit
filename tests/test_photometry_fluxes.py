@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from lfkit.photometry.fluxes import (
     mag_to_maggies,
@@ -146,3 +147,116 @@ def test_magerr_to_ivar_maggies_preserves_shape() -> None:
 
     assert ivar.shape == m.shape
     assert np.all(ivar > 0.0)
+
+
+@pytest.mark.parametrize(
+    "function, args",
+    [
+        (mag_to_maggies, (20.0,)),
+        (maggies_to_mag, (1e-8,)),
+        (magerr_to_ivar_maggies, (20.0, 0.1)),
+    ],
+)
+def test_flux_scalar_returns_float64_array(function, args) -> None:
+    """Tests that scalar flux conversions return zero-dimensional float64 arrays."""
+    result = function(*args)
+
+    assert isinstance(result, np.ndarray)
+    assert result.dtype == np.float64
+    assert result.shape == ()
+
+
+@pytest.mark.parametrize(
+    "floor",
+    [0.0, -1.0, np.nan, np.inf, -np.inf],
+)
+def test_maggies_to_mag_rejects_invalid_floor(floor) -> None:
+    """Tests that flux-to-magnitude conversion rejects invalid floors."""
+    with pytest.raises(ValueError, match="floor must be finite and strictly positive"):
+        maggies_to_mag(1.0, floor=floor)
+
+
+def test_mag_to_maggies_preserves_nonfinite_limits() -> None:
+    """Tests that magnitude-to-flux conversion preserves non-finite limits."""
+    result = mag_to_maggies([np.nan, np.inf, -np.inf])
+
+    assert np.isnan(result[0])
+    assert result[1] == 0.0
+    assert np.isposinf(result[2])
+
+
+def test_maggies_to_mag_preserves_missing_fluxes() -> None:
+    """Tests that flux-to-magnitude conversion preserves missing measurements."""
+    result = maggies_to_mag([np.nan, np.inf, 0.0])
+
+    assert np.isnan(result[0])
+    assert np.isneginf(result[1])
+    assert np.isfinite(result[2])
+
+
+def test_mag_to_maggies_extreme_magnitudes() -> None:
+    """Tests that extreme magnitudes retain their floating-point limits."""
+    with np.errstate(all="raise"):
+        result = mag_to_maggies([-1000.0, 1000.0])
+
+    assert np.isposinf(result[0])
+    assert result[1] == 0.0
+
+
+@pytest.mark.parametrize("magnitude", [np.nan, np.inf, -np.inf])
+def test_inverse_variance_masks_nonfinite_magnitudes(magnitude) -> None:
+    """Tests that non-finite magnitudes receive zero inverse variance."""
+    with np.errstate(all="raise"):
+        result = magerr_to_ivar_maggies(magnitude, 0.1)
+
+    assert result == 0.0
+
+
+@pytest.mark.parametrize("sigma_m", [0.0, -0.1, np.nan, np.inf, -np.inf])
+def test_inverse_variance_masks_invalid_uncertainties(sigma_m) -> None:
+    """Tests that invalid magnitude uncertainties receive zero inverse variance."""
+    with np.errstate(all="raise"):
+        result = magerr_to_ivar_maggies(20.0, sigma_m)
+
+    assert result == 0.0
+
+
+@pytest.mark.parametrize("magnitude", [-1000.0, -500.0, 500.0, 1000.0])
+def test_inverse_variance_extreme_magnitudes(magnitude) -> None:
+    """Tests that extreme magnitudes yield finite inverse variance without warnings."""
+    with np.errstate(all="raise"):
+        result = magerr_to_ivar_maggies(magnitude, 0.1)
+
+    assert result == 0.0
+    assert np.isfinite(result)
+
+
+def test_inverse_variance_preserves_representable_subnormal_values() -> None:
+    """Tests that representable inverse variances survive variance overflow."""
+    result = magerr_to_ivar_maggies(0.0, 1e155)
+
+    expected = (1.0 / (0.4 * np.log(10.0) * 1e155)) ** 2
+
+    assert result > 0.0
+    np.testing.assert_allclose(result, expected, rtol=1e-12, atol=0.0)
+
+
+def test_inverse_variance_masks_overflowing_weights() -> None:
+    """Tests that unrepresentable inverse variances are masked."""
+    with np.errstate(all="raise"):
+        result = magerr_to_ivar_maggies(0.0, 1e-200)
+
+    assert result == 0.0
+
+
+def test_inverse_variance_multidimensional_broadcasting() -> None:
+    """Tests that inverse variance supports multidimensional broadcasting."""
+    magnitude = np.array([[20.0], [21.0]])
+    uncertainty = np.array([0.1, 0.2, 0.3])
+
+    result = magerr_to_ivar_maggies(magnitude, uncertainty)
+
+    expected = 1.0 / (0.4 * np.log(10.0) * mag_to_maggies(magnitude) * uncertainty) ** 2
+
+    assert result.shape == (2, 3)
+    np.testing.assert_allclose(result, expected)
