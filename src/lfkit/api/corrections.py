@@ -151,8 +151,10 @@ class Corrections:
             band: Poggianti band identifier (e.g. "V", "B").
             gal_type: Galaxy spectral type in the Poggianti tables
                 (e.g. "E", "Sc").
-            cosmo: Optional cosmology object used for lookback-time
-                calculations in the evolution correction.
+            cosmo: Optional Astropy or PyCCL cosmology object used for
+                lookback-time calculations in the evolution correction.
+                If omitted, the default flat LambdaCDM cosmology is used
+                when redshift remapping is requested.
             original_z_for_e: Whether the evolution correction is evaluated
                 on the original Poggianti redshift grid.
             method: Interpolation method for the tabulated curves.

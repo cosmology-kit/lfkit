@@ -253,3 +253,41 @@ def test_poggianti1997_remapping_preserves_lookback_time(cosmology):
     assert z_mapped.shape == z_original.shape
     assert z_mapped[0] == 0.0
     assert np.all(np.diff(z_mapped) > 0.0)
+
+
+def test_make_ecorr_interpolator_default_cosmology():
+    """Tests that default evolution remapping uses the expected flat LambdaCDM cosmology."""
+    from astropy.cosmology import FlatLambdaCDM
+
+    cosmology = FlatLambdaCDM(
+        H0=67.0,
+        Om0=0.30,
+        Ob0=0.05,
+        Tcmb0=2.7255,
+        Neff=3.044,
+        m_nu=0.0,
+    )
+
+    z_e = np.array([0.1, 0.3, 0.5, 1.0])
+    ecorr = np.array([0.1, 0.3, 0.6, 1.2])
+    z_eval = np.linspace(0.0, 1.0, 100)
+
+    default = make_ecorr_interpolator(
+        z_e,
+        ecorr,
+        original_z=False,
+    )
+
+    explicit = make_ecorr_interpolator(
+        z_e,
+        ecorr,
+        original_z=False,
+        cosmo=cosmology,
+    )
+
+    np.testing.assert_allclose(
+        default(z_eval),
+        explicit(z_eval),
+        rtol=1e-12,
+        atol=1e-12,
+    )

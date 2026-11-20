@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import Final
 
 import numpy as np
+from astropy.cosmology import FlatLambdaCDM
 
-from lfkit.cosmo.cosmology import cosmo_object as build_cosmo
 from lfkit.cosmology.times import z_from_lookback_time
 from lfkit.utils.interpolation import (
     InterpMethod,
@@ -359,7 +359,10 @@ def make_ecorr_interpolator(
         original_z: If True, interpret ``z_e`` as Poggianti (1997) redshifts.
             If False, remap ``z_e`` to the target cosmology via lookback time.
         cosmo: Target cosmology used for the remapping when ``original_z=False``.
-            If not provided, lfkit's default cosmology is used.
+            Accepts an Astropy or PyCCL cosmology object.
+            If not provided, a flat LambdaCDM cosmology with
+            H0=67 km/s/Mpc, Om0=0.30, Ob0=0.05, Tcmb0=2.7255 K,
+            Neff=3.044, and massless neutrinos is used.
         zmap_zmax: Maximum redshift used to build the remapping inversion grid.
         zmap_nz: Number of samples used to build the remapping inversion grid.
         method: Interpolation method (``"pchip"``, ``"akima"``, or ``"linear"``).
@@ -373,7 +376,14 @@ def make_ecorr_interpolator(
 
     if not original_z:
         if cosmo is None:
-            cosmo = build_cosmo()
+            cosmo = FlatLambdaCDM(
+                H0=67.0,
+                Om0=0.30,
+                Ob0=0.05,
+                Tcmb0=2.7255,
+                Neff=3.044,
+                m_nu=0.0,
+            )
         z_e = poggianti1997_to_accelerating_redshift(
             z_e, cosmo_obj=cosmo, zmax=zmap_zmax, nz=zmap_nz
         )
