@@ -6,6 +6,12 @@ All notable changes to LFKit will be documented in this file.
 
 ### Added
 
+- Inverse luminosity-to-magnitude conversion with configurable reference
+  magnitude and luminosity.
+- Optional little-h scaling in distance-based magnitude conversions.
+- Photometry regression tests for round-trip conversions, broadcasting,
+  invalid inputs, and floating-point limits.
+- Executable examples for luminosity, magnitude, and flux conversions.
 - Backend-independent cosmology utilities supporting Astropy and PyCCL.
 - Dedicated modules for cosmological distances, expansion history,
   differential comoving volumes, and lookback times.
@@ -17,6 +23,11 @@ All notable changes to LFKit will be documented in this file.
 
 ### Changed
 
+- Consolidated luminosity ratios and luminosity weights through a shared
+  magnitude-based conversion.
+- Unified cosmology-based and distance-based magnitude conversions.
+- Standardized photometric conversion return types as float64 NumPy arrays.
+- Used shared cosmology utilities for luminosity distance validation.
 - Made Astropy an explicit required dependency.
 - Made PyCCL an optional dependency through the `ccl` installation extra.
 - Migrated photometric magnitude conversions and catalog completeness
@@ -28,6 +39,10 @@ All notable changes to LFKit will be documented in this file.
 
 ### Fixed
 
+- Inconsistent validation of reference magnitudes and luminosities.
+- Inconsistent zero-distance behavior between magnitude conversion interfaces.
+- Missing validation of the configurable photometric flux floor.
+- Numerical overflow and underflow in photometric inverse variance calculations.
 - Comoving volume calculations for cosmologies with nonzero curvature.
 - Distance calculations that depended on the supplied redshift grid.
 - Background calculations that previously assumed a restricted
@@ -36,11 +51,18 @@ All notable changes to LFKit will be documented in this file.
 
 ### Removed
 
+- Redundant photometry-specific luminosity distance validator.
 - Redundant cosmology constructors and background integration routines.
 - Duplicate lookback-time inversion helpers.
 
 ### Breaking changes
 
+- Removed `lfkit.utils.validators.validate_luminosity_distance`.
+- Distance-based magnitude conversions now accept zero distance and
+  return the corresponding infinite magnitude limit.
+- Non-finite photometric inverse variances are now masked to zero.
+- Invalid flux floors and non-finite reference luminosities now raise
+  `ValueError`.
 - Removed the legacy `lfkit.cosmo` package and its cosmology constructor.
   Use Astropy or PyCCL cosmology objects with `lfkit.cosmology` instead.
 - Replaced legacy background cosmology functions with the new

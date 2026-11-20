@@ -109,6 +109,101 @@ evolution correction accounts for intrinsic luminosity evolution of the galaxy
 population, depending on the convention adopted in the analysis.
 
 
+Distance modulus and cosmological conventions
+---------------------------------------------
+
+For a luminosity distance expressed in Mpc, the distance modulus is
+
+.. math::
+
+   \mu(z) =
+   25 + 5\log_{10}
+   \left(\frac{d_L(z)}{\mathrm{Mpc}}\right).
+
+Some luminosity function measurements use a convention in which
+the distance is rescaled by the dimensionless Hubble parameter
+:math:`h`. In this case,
+
+.. math::
+
+   \mu_h(z) =
+   25 + 5\log_{10}
+   \left(\frac{h d_L(z)}{\mathrm{Mpc}}\right)
+   =
+   \mu(z) + 5\log_{10}(h).
+
+The corresponding absolute magnitude is
+
+.. math::
+
+   M_h = M - 5\log_{10}(h).
+
+LFKit supports both conventions through the optional ``h`` argument
+in its magnitude conversion functions. By default, no rescaling
+is applied.
+
+The conversions accept either a cosmology object and redshift or
+a directly supplied luminosity distance. Both interfaces use the
+same photometric conventions.
+
+At zero luminosity distance, the distance modulus approaches
+negative infinity. For finite magnitudes and corrections, the
+apparent-to-absolute conversion therefore returns positive infinity,
+while the absolute-to-apparent conversion returns negative infinity.
+
+Negative and non-finite luminosity distances are rejected.
+Higher-level luminosity function integrations may impose stricter
+requirements on their distance and magnitude inputs.
+
+
+AB magnitudes and fluxes
+------------------------
+
+In the AB magnitude system, the flux density can be expressed
+in maggies, a linear flux unit normalized such that an AB magnitude
+of zero corresponds to one maggie.
+
+The conversion is
+
+.. math::
+
+   f = 10^{-0.4m_{\mathrm{AB}}},
+
+with inverse
+
+.. math::
+
+   m_{\mathrm{AB}} = -2.5\log_{10}(f).
+
+For numerical purposes, the inverse conversion applies a configurable
+positive flux floor. Fluxes below this floor, including zero and
+negative measurements, map to the corresponding limiting magnitude.
+This is a numerical convention rather than a physical magnitude
+measurement for a non-positive flux.
+
+Magnitude uncertainties can be propagated into flux uncertainties
+using a first-order approximation:
+
+.. math::
+
+   \sigma_f =
+   0.4\ln(10)\,f\,\sigma_m.
+
+The corresponding inverse variance is
+
+.. math::
+
+   \mathrm{ivar}_f =
+   \frac{1}{\sigma_f^2}.
+
+Non-positive or non-finite propagated uncertainties receive zero
+inverse variance. Inverse variances that cannot be represented
+as finite floating-point values are also masked.
+
+This propagation assumes small magnitude uncertainties and does
+not account for covariance between photometric bands.
+
+
 Magnitude-space luminosity functions
 ------------------------------------
 

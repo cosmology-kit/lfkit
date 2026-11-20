@@ -84,7 +84,12 @@ def test_absolute_magnitude_without_corrections(
         _, _, _ = cosmo_obj, z, h
         return np.array([40.0, 41.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.absolute_magnitude(
         cosmo_obj=object(),
@@ -110,7 +115,12 @@ def test_absolute_magnitude_with_corrections(monkeypatch: pytest.MonkeyPatch) ->
         _, _, _ = cosmo_obj, z, h
         return np.array([40.0, 41.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.absolute_magnitude(
         cosmo_obj=object(),
@@ -143,7 +153,12 @@ def test_apparent_magnitude_without_corrections(
         _, _, _ = cosmo_obj, z, h
         return np.array([40.0, 41.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.apparent_magnitude(
         cosmo_obj=object(),
@@ -169,7 +184,12 @@ def test_apparent_magnitude_with_corrections(monkeypatch: pytest.MonkeyPatch) ->
         _, _, _ = cosmo_obj, z, h
         return np.array([40.0, 41.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.apparent_magnitude(
         cosmo_obj=object(),
@@ -203,7 +223,12 @@ def test_apparent_and_absolute_are_inverse_without_corrections(
         z_arr = np.asarray(z, dtype=float)
         return 40.0 + z_arr
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     apparent_mag = np.array([20.0, 21.0, 22.0])
     z = np.array([0.1, 0.2, 0.3])
@@ -237,7 +262,12 @@ def test_apparent_and_absolute_are_inverse_with_corrections(
         z_arr = np.asarray(z, dtype=float)
         return 39.5 + 2.0 * z_arr
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     apparent_mag = np.array([20.0, 21.0, 22.0])
     z = np.array([0.1, 0.2, 0.3])
@@ -262,62 +292,6 @@ def test_apparent_and_absolute_are_inverse_with_corrections(
     np.testing.assert_allclose(recovered, apparent_mag)
 
 
-def test_absolute_magnitude_passes_h_to_distance_modulus(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Tests that absolute_magnitude forwards h to distance_modulus."""
-    captured: dict[str, float | None] = {"h": None}
-
-    def mock_distance_modulus(
-        cosmo_obj: object,
-        z: np.ndarray,
-        h: float | None = None,
-    ) -> np.ndarray:
-        """Capture h and return a fixed distance modulus."""
-        _, _ = cosmo_obj, z
-        captured["h"] = h
-        return np.array([40.0], dtype=float)
-
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
-
-    _ = magnitudes.absolute_magnitude(
-        cosmo_obj=object(),
-        z=np.array([0.1]),
-        apparent_mag=np.array([20.0]),
-        h=0.7,
-    )
-
-    assert captured["h"] == pytest.approx(0.7)
-
-
-def test_apparent_magnitude_passes_h_to_distance_modulus(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Tests that apparent_magnitude forwards h to distance_modulus."""
-    captured: dict[str, float | None] = {"h": None}
-
-    def mock_distance_modulus(
-        cosmo_obj: object,
-        z: np.ndarray,
-        h: float | None = None,
-    ) -> np.ndarray:
-        """Capture h and return a fixed distance modulus."""
-        _, _ = cosmo_obj, z
-        captured["h"] = h
-        return np.array([40.0], dtype=float)
-
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
-
-    _ = magnitudes.apparent_magnitude(
-        cosmo_obj=object(),
-        z=np.array([0.1]),
-        absolute_mag=np.array([-20.0]),
-        h=0.7,
-    )
-
-    assert captured["h"] == pytest.approx(0.7)
-
-
 def test_absolute_magnitude_broadcasts_scalar_correction(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -332,7 +306,12 @@ def test_absolute_magnitude_broadcasts_scalar_correction(
         _, _, _ = cosmo_obj, z, h
         return np.array([40.0, 41.0, 42.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.absolute_magnitude(
         cosmo_obj=object(),
@@ -359,7 +338,12 @@ def test_apparent_magnitude_broadcasts_scalar_correction(
         _, _, _ = cosmo_obj, z, h
         return np.array([40.0, 41.0, 42.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.apparent_magnitude(
         cosmo_obj=object(),
@@ -504,24 +488,6 @@ def test_apparent_magnitude_from_luminosity_distance_broadcasts_corrections() ->
     np.testing.assert_allclose(result, np.array([26.0, 25.5]))
 
 
-def test_absolute_magnitude_from_luminosity_distance_rejects_zero_distance() -> None:
-    """Tests that apparent-to-absolute conversion rejects zero distance."""
-    with pytest.raises(ValueError, match="positive values"):
-        absolute_magnitude_from_luminosity_distance(
-            26.0,
-            0.0,
-        )
-
-
-def test_apparent_magnitude_from_luminosity_distance_rejects_zero_distance() -> None:
-    """Tests that absolute-to-apparent conversion rejects zero distance."""
-    with pytest.raises(ValueError, match="positive values"):
-        apparent_magnitude_from_luminosity_distance(
-            -4.0,
-            0.0,
-        )
-
-
 def test_absolute_magnitude_from_luminosity_distance_rejects_negative_distance() -> (
     None
 ):
@@ -548,7 +514,7 @@ def test_absolute_magnitude_from_luminosity_distance_rejects_nonfinite_distance(
     None
 ):
     """Tests that apparent-to-absolute conversion rejects non-finite distance."""
-    with pytest.raises(ValueError, match="luminosity_distance_mpc contains NaN"):
+    with pytest.raises(ValueError, match="luminosity_distance contains NaN"):
         absolute_magnitude_from_luminosity_distance(
             26.0,
             np.nan,
@@ -559,7 +525,7 @@ def test_apparent_magnitude_from_luminosity_distance_rejects_nonfinite_distance(
     None
 ):
     """Tests that absolute-to-apparent conversion rejects non-finite distance."""
-    with pytest.raises(ValueError, match="luminosity_distance_mpc contains NaN"):
+    with pytest.raises(ValueError, match="luminosity_distance contains NaN"):
         apparent_magnitude_from_luminosity_distance(
             -4.0,
             np.nan,
@@ -641,7 +607,12 @@ def test_absolute_magnitude_supports_scalar_magnitude_with_array_redshift(
         _, _ = cosmo_obj, h
         return np.asarray([40.0, 41.0, 42.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.absolute_magnitude(
         cosmo_obj=object(),
@@ -666,7 +637,12 @@ def test_apparent_magnitude_supports_scalar_magnitude_with_array_redshift(
         _, _ = cosmo_obj, h
         return np.asarray([40.0, 41.0, 42.0], dtype=float)
 
-    monkeypatch.setattr(magnitudes, "distance_modulus", mock_distance_modulus)
+    def mock_luminosity_distance(cosmo_obj, z):
+        """Return luminosity distances corresponding to the mocked modulus."""
+        mu = mock_distance_modulus(cosmo_obj, z)
+        return np.power(10.0, (mu - 25.0) / 5.0)
+
+    monkeypatch.setattr(magnitudes, "luminosity_distance_mpc", mock_luminosity_distance)
 
     out = magnitudes.apparent_magnitude(
         cosmo_obj=object(),
@@ -736,3 +712,132 @@ def test_magnitude_conversions_match_distance_based_conversions(cosmology):
         magnitudes.absolute_magnitude_from_luminosity_distance(m, distance),
         rtol=1e-12,
     )
+
+
+@pytest.mark.parametrize("h", [None, 0.5, 0.67, 0.7, 1.0])
+def test_distance_based_magnitude_roundtrip_with_h(h):
+    """Tests that distance-based magnitude conversions invert each other with h."""
+    distance = np.array([10.0, 100.0, 1000.0])
+    apparent = np.array([20.0, 22.0, 24.0])
+
+    absolute = absolute_magnitude_from_luminosity_distance(
+        apparent,
+        distance,
+        h=h,
+        k_correction=0.3,
+        e_correction=0.1,
+    )
+
+    recovered = apparent_magnitude_from_luminosity_distance(
+        absolute,
+        distance,
+        h=h,
+        k_correction=0.3,
+        e_correction=0.1,
+    )
+
+    np.testing.assert_allclose(recovered, apparent, atol=1e-12)
+
+
+@pytest.mark.parametrize("h", [0.5, 0.67, 0.7, 1.0])
+def test_absolute_magnitude_h_scaling(h):
+    """Tests that absolute magnitudes follow the expected little-h convention."""
+    physical = absolute_magnitude_from_luminosity_distance(25.0, 100.0)
+    scaled = absolute_magnitude_from_luminosity_distance(25.0, 100.0, h=h)
+
+    np.testing.assert_allclose(
+        scaled,
+        physical - 5.0 * np.log10(h),
+        atol=1e-12,
+    )
+
+
+@pytest.mark.parametrize("h", [0.5, 0.67, 0.7, 1.0])
+def test_apparent_magnitude_h_scaling(h):
+    """Tests that apparent magnitudes follow the expected little-h convention."""
+    physical = apparent_magnitude_from_luminosity_distance(-20.0, 100.0)
+    scaled = apparent_magnitude_from_luminosity_distance(-20.0, 100.0, h=h)
+
+    np.testing.assert_allclose(
+        scaled,
+        physical + 5.0 * np.log10(h),
+        atol=1e-12,
+    )
+
+
+@pytest.mark.parametrize("h", [None, 0.67])
+def test_absolute_magnitude_zero_distance(h):
+    """Tests that zero distance produces positive infinite absolute magnitude."""
+    result = absolute_magnitude_from_luminosity_distance(
+        25.0,
+        [0.0, 100.0],
+        h=h,
+    )
+
+    assert np.isposinf(result[0])
+    assert np.isfinite(result[1])
+
+
+@pytest.mark.parametrize("h", [None, 0.67])
+def test_apparent_magnitude_zero_distance(h):
+    """Tests that zero distance produces negative infinite apparent magnitude."""
+    result = apparent_magnitude_from_luminosity_distance(
+        -20.0,
+        [0.0, 100.0],
+        h=h,
+    )
+
+    assert np.isneginf(result[0])
+    assert np.isfinite(result[1])
+
+
+@pytest.mark.parametrize(
+    "function, magnitude",
+    [
+        (absolute_magnitude_from_luminosity_distance, 25.0),
+        (apparent_magnitude_from_luminosity_distance, -20.0),
+    ],
+)
+@pytest.mark.parametrize("h", [0.0, -1.0, np.nan, np.inf, -np.inf])
+def test_distance_based_magnitude_rejects_invalid_h(function, magnitude, h):
+    """Tests that distance-based magnitude conversions reject invalid h."""
+    with pytest.raises(ValueError, match="h must be finite and positive"):
+        function(magnitude, 100.0, h=h)
+
+
+@pytest.mark.parametrize("h", [None, 0.67])
+def test_cosmology_and_distance_conversions_with_h(cosmology, h):
+    """Tests that both magnitude conversion interfaces agree across backends."""
+    from lfkit.cosmology.distances import luminosity_distance_mpc
+
+    z = np.array([0.1, 0.5, 1.0, 2.0])
+    distance = luminosity_distance_mpc(cosmology, z)
+
+    kwargs = {
+        "h": h,
+        "k_correction": 0.3,
+        "e_correction": 0.1,
+    }
+
+    np.testing.assert_allclose(
+        magnitudes.absolute_magnitude(cosmology, z, 25.0, **kwargs),
+        absolute_magnitude_from_luminosity_distance(25.0, distance, **kwargs),
+        rtol=1e-12,
+    )
+
+    np.testing.assert_allclose(
+        magnitudes.apparent_magnitude(cosmology, z, -20.0, **kwargs),
+        apparent_magnitude_from_luminosity_distance(-20.0, distance, **kwargs),
+        rtol=1e-12,
+    )
+
+
+@pytest.mark.parametrize("h", [None, 0.67])
+def test_cosmology_magnitude_conversions_at_zero_redshift(cosmology, h):
+    """Tests that cosmology-based conversions preserve the zero-redshift limit."""
+    absolute = magnitudes.absolute_magnitude(cosmology, 0.0, 25.0, h=h)
+
+    apparent = magnitudes.apparent_magnitude(cosmology, 0.0, -20.0, h=h)
+
+    assert np.isposinf(absolute)
+    assert np.isneginf(apparent)

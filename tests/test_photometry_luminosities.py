@@ -11,6 +11,7 @@ from lfkit.photometry.luminosities import (
     luminosity_ratio_from_magnitudes,
     luminosity_weight_from_magnitude,
     magnitude_difference_from_luminosity_ratio,
+    magnitude_from_luminosity,
 )
 
 
@@ -205,7 +206,9 @@ def test_luminosity_from_magnitude_uses_reference_magnitude() -> None:
     np.testing.assert_allclose(result, expected)
 
 
-def test_luminosity_from_magnitude_raises_for_non_positive_reference_luminosity() -> None:
+def test_luminosity_from_magnitude_raises_for_non_positive_reference_luminosity() -> (
+    None
+):
     """Tests that non-positive reference luminosity raises ValueError."""
     with pytest.raises(ValueError, match="strictly positive"):
         luminosity_from_magnitude(-20.0, reference_luminosity=0.0)
@@ -272,3 +275,146 @@ def test_luminosity_outputs_are_finite_for_extreme_magnitudes() -> None:
     assert np.all(np.isfinite(ratio))
     assert np.all(np.isfinite(weight))
     assert np.all(np.isfinite(luminosity))
+
+
+@pytest.mark.parametrize(
+    "magnitude",
+    [
+        -21.0,
+        [-22.0, -21.0, -20.0],
+        np.array([-22.0, -21.0, -20.0]),
+        np.array([[-22.0, -21.0], [-20.0, -19.0]]),
+    ],
+)
+@pytest.mark.parametrize("reference_magnitude", [0.0, -21.0])
+@pytest.mark.parametrize("reference_luminosity", [1.0, 1e10])
+def test_magnitude_luminosity_roundtrip(
+    magnitude,
+    reference_magnitude,
+    reference_luminosity,
+):
+    """Tests that luminosity and magnitude conversions are mutually inverse."""
+    luminosity = luminosity_from_magnitude(
+        magnitude,
+        reference_magnitude=reference_magnitude,
+        reference_luminosity=reference_luminosity,
+    )
+
+    recovered = magnitude_from_luminosity(
+        luminosity,
+        reference_magnitude=reference_magnitude,
+        reference_luminosity=reference_luminosity,
+    )
+
+    np.testing.assert_allclose(recovered, magnitude, atol=1e-12)
+    assert isinstance(recovered, np.ndarray)
+    assert recovered.shape == np.asarray(magnitude).shape
+    assert recovered.dtype == np.float64
+
+
+def test_magnitude_from_luminosity_known_values():
+    """Tests that known luminosities give the expected magnitudes."""
+    result = magnitude_from_luminosity(
+        [1e9, 1e10, 1e11],
+        reference_magnitude=-20.0,
+        reference_luminosity=1e10,
+    )
+
+    np.testing.assert_allclose(result, [-17.5, -20.0, -22.5])
+
+
+def test_magnitude_from_luminosity_broadcasts_inputs():
+    """Tests that luminosity and reference magnitude inputs broadcast."""
+    luminosity = np.array([0.1, 1.0, 10.0])
+    reference_magnitude = np.array([[-21.0], [-20.0]])
+
+    result = magnitude_from_luminosity(
+        luminosity,
+        reference_magnitude=reference_magnitude,
+    )
+
+    assert result.shape == (2, 3)
+
+    np.testing.assert_allclose(
+        result,
+        [[-18.5, -21.0, -23.5], [-17.5, -20.0, -22.5]],
+    )
+
+
+@pytest.mark.parametrize("luminosity", [0.0, -1.0, np.nan, np.inf, -np.inf])
+def test_magnitude_from_luminosity_rejects_invalid_luminosity(luminosity):
+    """Tests that invalid luminosities raise ValueError."""
+    with pytest.raises(ValueError):
+        magnitude_from_luminosity(luminosity)
+
+
+@pytest.mark.parametrize(
+    "function, value",
+    [
+        (luminosity_from_magnitude, -20.0),
+        (magnitude_from_luminosity, 1.0),
+    ],
+)
+@pytest.mark.parametrize(
+    "reference_luminosity",
+    [0.0, -1.0, np.nan, np.inf, -np.inf],
+)
+def test_conversions_reject_invalid_reference_luminosity(
+    function,
+    value,
+    reference_luminosity,
+):
+    """Tests that conversions reject invalid reference luminosities."""
+    with pytest.raises(ValueError, match="finite and strictly positive"):
+        function(value, reference_luminosity=reference_luminosity)
+
+
+@pytest.mark.parametrize(
+    "function, value",
+    [
+        (luminosity_from_magnitude, -20.0),
+        (magnitude_from_luminosity, 1.0),
+        (luminosity_weight_from_magnitude, -20.0),
+    ],
+)
+@pytest.mark.parametrize("reference_magnitude", [np.nan, np.inf, -np.inf])
+def test_conversions_reject_invalid_reference_magnitude(
+    function,
+    value,
+    reference_magnitude,
+):
+    """Tests that conversions reject non-finite reference magnitudes."""
+    with pytest.raises(ValueError):
+        function(value, reference_magnitude=reference_magnitude)
+
+
+@pytest.mark.parametrize(
+    "luminosity, reference_luminosity, expected",
+    [
+        (1e300, 1e-300, -1500.0),
+        (1e-300, 1e300, 1500.0),
+    ],
+)
+def test_magnitude_from_luminosity_extreme_ratios(
+    luminosity,
+    reference_luminosity,
+    expected,
+):
+    """Tests that extreme luminosity ratios remain numerically stable."""
+    result = magnitude_from_luminosity(
+        luminosity,
+        reference_luminosity=reference_luminosity,
+    )
+
+    np.testing.assert_allclose(result, expected)
+
+
+def test_luminosity_weight_matches_general_ratio():
+    """Tests that luminosity weights match the general luminosity ratio."""
+    magnitude = np.array([-22.0, -21.0, -20.0])
+    reference = np.array([[-21.0], [-20.0]])
+
+    np.testing.assert_allclose(
+        luminosity_weight_from_magnitude(magnitude, reference),
+        luminosity_ratio_from_magnitudes(magnitude, reference),
+    )

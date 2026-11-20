@@ -13,4 +13,5 @@ lfkit.photometry.luminosities
       luminosity_ratio_from_magnitudes
       luminosity_weight_from_magnitude
       magnitude_difference_from_luminosity_ratio
+      magnitude_from_luminosity
    
