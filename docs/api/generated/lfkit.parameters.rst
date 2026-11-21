@@ -3,7 +3,7 @@ lfkit.parameters
 
 .. automodule:: lfkit.parameters
 
-   
+
 .. rubric:: Modules
 
 .. autosummary::
