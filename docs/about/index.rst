@@ -62,6 +62,21 @@ Core components
       comoving volumes, and lookback times using Astropy or PyCCL.
 
 
+
+   .. grid-item-card::
+      :link: parameters_overview
+      :link-type: doc
+      :shadow: md
+
+      .. card-header::
+
+         **Parameter Evolution**
+
+      Models for the evolution of luminosity function parameters,
+      including normalization, characteristic magnitude, and faint-end
+      slope, with support for custom parameter dependencies.
+
+
 .. toctree::
    :maxdepth: 1
    :hidden:
@@ -69,3 +84,4 @@ Core components
    corrections_overview
    photometry_overview
    cosmology_overview
+   parameters_overview

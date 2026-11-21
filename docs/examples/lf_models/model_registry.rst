@@ -42,6 +42,22 @@ Available parameter models
 
    LuminosityFunction.available_parameter_models()
 
+The same parameter model registry can be inspected directly, without
+creating a luminosity function object.
+
+.. testcode::
+
+   from lfkit.parameters.evolution import available_lf_parameter_models
+
+   models = available_lf_parameter_models()
+
+   assert models["phi_star"] == ["constant", "linear_p"]
+   assert models["m_star"] == ["constant", "linear_q"]
+   assert models["alpha"] == ["constant", "linear"]
+
+For the mathematical definitions and parameter evaluation conventions,
+see :doc:`../../about/parameters_overview`.
+
 
 Typical use
 -----------
