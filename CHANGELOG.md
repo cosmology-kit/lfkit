@@ -6,6 +6,11 @@ All notable changes to LFKit will be documented in this file.
 
 ### Added
 
+- Dedicated parameters package for luminosity function parameter evolution.
+- Parameter evolution overview with scientific definitions and executable
+  examples.
+- Regression tests for array-valued evolution coefficients, custom model
+  outputs, normalization constraints, and numerical overflow.
 - Inverse luminosity-to-magnitude conversion with configurable reference
   magnitude and luminosity.
 - Optional little-h scaling in distance-based magnitude conversions.
@@ -23,6 +28,10 @@ All notable changes to LFKit will be documented in this file.
 
 ### Changed
 
+- Separated parameter evolution models from luminosity function models.
+- Consolidated parameter evolution through the shared parameter evaluator.
+- Standardized parameter evolution outputs as float64 NumPy arrays
+  broadcast to the redshift input shape.
 - Consolidated luminosity ratios and luminosity weights through a shared
   magnitude-based conversion.
 - Unified cosmology-based and distance-based magnitude conversions.
@@ -39,6 +48,12 @@ All notable changes to LFKit will be documented in this file.
 
 ### Fixed
 
+- Missing validation of non-finite parameter evolution coefficients
+  and evaluated parameter values.
+- Inconsistent scalar and array-valued parameter broadcasting.
+- Missing validation of registered custom parameter model outputs.
+- Acceptance of negative luminosity function normalization in
+  parameter evolution models.
 - Inconsistent validation of reference magnitudes and luminosities.
 - Inconsistent zero-distance behavior between magnitude conversion interfaces.
 - Missing validation of the configurable photometric flux floor.
@@ -57,6 +72,13 @@ All notable changes to LFKit will be documented in this file.
 
 ### Breaking changes
 
+- Moved `lfkit.luminosity_functions.parameter_models` to
+  `lfkit.parameters.evolution`.
+- Parameter evolution models now reject negative normalization,
+  non-finite coefficients, non-finite outputs, and incompatible shapes.
+- Parameter model outputs evaluated through the shared evaluator must
+  be broadcastable to the redshift input shape.
+- Broadcast parameter arrays may be read-only.
 - Removed `lfkit.utils.validators.validate_luminosity_distance`.
 - Distance-based magnitude conversions now accept zero distance and
   return the corresponding infinite magnitude limit.
