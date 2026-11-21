@@ -1,7 +1,7 @@
-lfkit.luminosity\_functions.parameter\_models
-=============================================
+lfkit.parameters.evolution
+==========================
 
-.. automodule:: lfkit.luminosity_functions.parameter_models
+.. automodule:: lfkit.parameters.evolution
 
    
    .. rubric:: Functions
