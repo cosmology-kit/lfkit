@@ -14,5 +14,6 @@
    corrections
    cosmology
    luminosity_functions
+   parameters
    photometry
    utils
