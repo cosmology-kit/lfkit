@@ -222,6 +222,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../about/corrections_overview.html"> Photometric Corrections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../about/photometry_overview.html"> Photometry Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../about/cosmology_overview.html"> Cosmology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/parameters_overview.html"> Parameter evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html"> Examples</a><input aria-label="Toggle navigation of  Examples" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
@@ -284,18 +285,21 @@
 <li class="toctree-l5"><a class="reference internal" href="../api/generated/lfkit.luminosity_functions.models.schechter.html">lfkit.luminosity_functions.models.schechter</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.luminosity_functions.parameter_models.html">lfkit.luminosity_functions.parameter_models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.luminosity_functions.redshift_density.html">lfkit.luminosity_functions.redshift_density</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.luminosity_functions.registry.html">lfkit.luminosity_functions.registry</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.photometry.html">lfkit.photometry</a><input aria-label="Toggle navigation of lfkit.photometry" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.parameters.html">lfkit.parameters</a><input aria-label="Toggle navigation of lfkit.parameters" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.parameters.evolution.html">lfkit.parameters.evolution</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.photometry.html">lfkit.photometry</a><input aria-label="Toggle navigation of lfkit.photometry" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.photometry.fluxes.html">lfkit.photometry.fluxes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.photometry.luminosities.html">lfkit.photometry.luminosities</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.photometry.magnitudes.html">lfkit.photometry.magnitudes</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.utils.html">lfkit.utils</a><input aria-label="Toggle navigation of lfkit.utils" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/generated/lfkit.utils.html">lfkit.utils</a><input aria-label="Toggle navigation of lfkit.utils" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.evaluators.html">lfkit.utils.evaluators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.integrators.html">lfkit.utils.integrators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/generated/lfkit.utils.interpolation.html">lfkit.utils.interpolation</a></li>
@@ -462,7 +466,7 @@ population evolves.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/e101739b3d33831388122f223e70e499/conditional_luminosity_function-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/76c5a195d12338835ce0d2e8fb43f0d7/conditional_luminosity_function-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-1.png"><img alt="../_images/conditional_luminosity_function-1.png" class="plot-directive" src="../_images/conditional_luminosity_function-1.png" style="width: 520px;" />
 </a>
@@ -540,7 +544,7 @@ problem with the chosen parameterization or redshift dependence.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/b3445c8d54d52ff682dbd58909507ec0/conditional_luminosity_function-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/50b24ec76d6060c3412ed8db2c862119/conditional_luminosity_function-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-2.png"><img alt="../_images/conditional_luminosity_function-2.png" class="plot-directive" src="../_images/conditional_luminosity_function-2.png" style="width: 560px;" />
 </a>
@@ -615,7 +619,7 @@ normalization.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/a936a81f5060a614c29dc1d18f99e984/conditional_luminosity_function-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/c8ee0e3fc7b61c71832e2518f12a59f2/conditional_luminosity_function-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-3.png"><img alt="../_images/conditional_luminosity_function-3.png" class="plot-directive" src="../_images/conditional_luminosity_function-3.png" style="width: 520px;" />
 </a>
@@ -687,7 +691,7 @@ scale rather than a broad Schechter-like faint-end tail.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/17f2ead66007cf8a4fceee6853762cbc/conditional_luminosity_function-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/0ff3a35b980411f743e91b8be35dbf80/conditional_luminosity_function-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-4.png"><img alt="../_images/conditional_luminosity_function-4.png" class="plot-directive" src="../_images/conditional_luminosity_function-4.png" style="width: 520px;" />
 </a>
@@ -752,7 +756,7 @@ The model therefore changes both in amplitude and in shape.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/a2f47df47199acba7be92cab6de9fd5d/conditional_luminosity_function-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/63dcc7a2750ebbd84513e5d67f3266ed/conditional_luminosity_function-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-5.png"><img alt="../_images/conditional_luminosity_function-5.png" class="plot-directive" src="../_images/conditional_luminosity_function-5.png" style="width: 520px;" />
 </a>
@@ -849,7 +853,7 @@ best suited to describe.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/9d32efae4b32316186e2f59c3645df4a/conditional_luminosity_function-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/fa6a8717e1d0ad8b79614b7aced12784/conditional_luminosity_function-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-6.png"><img alt="../_images/conditional_luminosity_function-6.png" class="plot-directive" src="../_images/conditional_luminosity_function-6.png" style="width: 520px;" />
 </a>
@@ -933,7 +937,7 @@ the broader component.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/487ba83a18e9075a240a0ea7278a0388/conditional_luminosity_function-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/00491687a60250bed7c1381a019336fc/conditional_luminosity_function-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-7.png"><img alt="../_images/conditional_luminosity_function-7.png" class="plot-directive" src="../_images/conditional_luminosity_function-7.png" style="width: 520px;" />
 </a>
@@ -1008,7 +1012,7 @@ direction.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/aff45ed8f08baca62056ea870d208d2a/conditional_luminosity_function-8.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/133958bc06517054f018cc0f3ccb28b8/conditional_luminosity_function-8.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-8.png"><img alt="../_images/conditional_luminosity_function-8.png" class="plot-directive" src="../_images/conditional_luminosity_function-8.png" style="width: 520px;" />
 </a>
@@ -1103,7 +1107,7 @@ component in the two-component model.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/9bdb90d80e5a641af1e77016ebef5f74/conditional_luminosity_function-9.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/2bbf03ce08d72bbb922e8bf3f1e97b7f/conditional_luminosity_function-9.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-9.png"><img alt="../_images/conditional_luminosity_function-9.png" class="plot-directive" src="../_images/conditional_luminosity_function-9.png" style="width: 520px;" />
 </a>
@@ -1195,7 +1199,7 @@ number densities alone.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/08b0c03f89cc930b27400a5054571947/conditional_luminosity_function-10.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/49f99f0f09956afa2b9c105f844e95de/conditional_luminosity_function-10.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-10.png"><img alt="../_images/conditional_luminosity_function-10.png" class="plot-directive" src="../_images/conditional_luminosity_function-10.png" style="width: 520px;" />
 </a>
@@ -1277,7 +1281,7 @@ model predicts the largest abundance of galaxies.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/2c6549c25f555bc05c977ad36afbacb3/conditional_luminosity_function-11.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/df9a26f23e684fe9c3dd5a7727b1cce5/conditional_luminosity_function-11.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-11.png"><img alt="../_images/conditional_luminosity_function-11.png" class="plot-directive" src="../_images/conditional_luminosity_function-11.png" style="width: 560px;" />
 </a>
@@ -1348,7 +1352,7 @@ brighter and more abundant galaxies in this toy model.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/cd252c7b866d92770740c12d1e035a63/conditional_luminosity_function-12.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/1db4308936871ff9f2705bf20a415002/conditional_luminosity_function-12.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-12.png"><img alt="../_images/conditional_luminosity_function-12.png" class="plot-directive" src="../_images/conditional_luminosity_function-12.png" style="width: 520px;" />
 </a>
@@ -1433,7 +1437,7 @@ the selected population relative to the chosen reference luminosity.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/0834d83beb2b87f4d3022ce0a6c85a03/conditional_luminosity_function-13.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/b4b9392c66b5eea9ef661be5ccfddbde/conditional_luminosity_function-13.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-13.png"><img alt="../_images/conditional_luminosity_function-13.png" class="plot-directive" src="../_images/conditional_luminosity_function-13.png" style="width: 520px;" />
 </a>
@@ -1521,7 +1525,7 @@ the selection.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/5d595b338a3ecde1090fd109a7648e80/conditional_luminosity_function-14.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/f005041d907a6cdac3a352119ba0aec1/conditional_luminosity_function-14.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-14.png"><img alt="../_images/conditional_luminosity_function-14.png" class="plot-directive" src="../_images/conditional_luminosity_function-14.png" style="width: 520px;" />
 </a>
@@ -1600,7 +1604,7 @@ removes a larger fraction of the population.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/ae2b38d749495093c44a9830505d5ee8/conditional_luminosity_function-15.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/535944bb45ad8cd770cf87d2b99b3a36/conditional_luminosity_function-15.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../_images/conditional_luminosity_function-15.png"><img alt="../_images/conditional_luminosity_function-15.png" class="plot-directive" src="../_images/conditional_luminosity_function-15.png" style="width: 520px;" />
 </a>
